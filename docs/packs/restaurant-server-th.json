@@ -43,6 +43,12 @@
             "setting": "A group walks into the restaurant.",
             "dialogue": [
               {
+                "speaker": "guest",
+                "text": "สวัสดีครับ",
+                "romanization": "Sawatdi khrap.",
+                "meaning": "Hello."
+              },
+              {
                 "speaker": "you",
                 "uses_phrase": true,
                 "text": "สวัสดีค่ะ กี่ท่านคะ",
@@ -137,11 +143,17 @@
             "setting": "The diners have just sat down.",
             "dialogue": [
               {
+                "speaker": "guest",
+                "text": "ขอเมนูหน่อยครับ",
+                "romanization": "Kho menu noi khrap.",
+                "meaning": "Can we have the menu, please?"
+              },
+              {
                 "speaker": "you",
                 "uses_phrase": true,
-                "text": "รับเครื่องดื่มอะไรดีคะ",
-                "romanization": "Rap khrueang duem arai di kha?",
-                "meaning": "What would you like to drink?"
+                "text": "นี่เมนูค่ะ รับเครื่องดื่มอะไรดีคะ",
+                "romanization": "Ni menu kha. Rap khrueang duem arai di kha?",
+                "meaning": "Here's the menu. What would you like to drink?"
               },
               {
                 "speaker": "guest",
@@ -240,11 +252,17 @@
             "setting": "You clear the plates from a table that has finished.",
             "dialogue": [
               {
+                "speaker": "guest",
+                "text": "อิ่มแล้วครับ อร่อยมาก",
+                "romanization": "Im laeo khrap, aroi mak.",
+                "meaning": "We're full. It was delicious."
+              },
+              {
                 "speaker": "you",
                 "uses_phrase": true,
-                "text": "เช็กบิลเลยไหมคะ",
-                "romanization": "Chek bin loei mai kha?",
-                "meaning": "Shall I bring the bill now?"
+                "text": "ขอบคุณค่ะ เช็กบิลเลยไหมคะ",
+                "romanization": "Khop khun kha. Chek bin loei mai kha?",
+                "meaning": "Thank you. Shall I bring the bill now?"
               },
               {
                 "speaker": "guest",
@@ -382,9 +400,9 @@
             "dialogue": [
               {
                 "speaker": "guest",
-                "text": "อร่อยมากครับ",
-                "romanization": "Aroi mak khrap.",
-                "meaning": "It was delicious."
+                "text": "ไปก่อนนะครับ",
+                "romanization": "Pai kon na khrap.",
+                "meaning": "We're off now."
               },
               {
                 "speaker": "you",

@@ -43,23 +43,23 @@
             "setting": "A guest walks up to the front desk with a suitcase.",
             "dialogue": [
               {
+                "speaker": "guest",
+                "text": "你好，我要办入住。",
+                "romanization": "Nǐ hǎo, wǒ yào bàn rùzhù.",
+                "meaning": "Hello, I'd like to check in."
+              },
+              {
                 "speaker": "you",
                 "uses_phrase": true,
-                "text": "您好，欢迎光临。请问您预订的名字是什么？",
-                "romanization": "Nín hǎo, huānyíng guānglín. Qǐngwèn nín yùdìng de míngzi shì shénme?",
-                "meaning": "Hello, welcome. May I ask the name on your booking?"
+                "text": "好的。请问您预订的名字是什么？",
+                "romanization": "Hǎo de. Qǐngwèn nín yùdìng de míngzi shì shénme?",
+                "meaning": "Certainly. May I ask the name on your booking?"
               },
               {
                 "speaker": "guest",
                 "text": "我叫王明。",
                 "romanization": "Wǒ jiào Wáng Míng.",
                 "meaning": "My name is Wang Ming."
-              },
-              {
-                "speaker": "you",
-                "text": "好的，王先生，请稍等。",
-                "romanization": "Hǎo de, Wáng xiānsheng, qǐng shāo děng.",
-                "meaning": "Okay, Mr Wang, one moment please."
               }
             ]
           },
@@ -143,23 +143,23 @@
             "setting": "You have found the booking and need to register the guest.",
             "dialogue": [
               {
+                "speaker": "guest",
+                "text": "需要什么证件吗？",
+                "romanization": "Xūyào shénme zhèngjiàn ma?",
+                "meaning": "Do you need any ID?"
+              },
+              {
                 "speaker": "you",
                 "uses_phrase": true,
-                "text": "麻烦您出示一下护照。",
-                "romanization": "Máfan nín chūshì yíxià hùzhào.",
-                "meaning": "Could you please show your passport?"
+                "text": "需要，麻烦您出示一下护照。",
+                "romanization": "Xūyào, máfan nín chūshì yíxià hùzhào.",
+                "meaning": "Yes, could you please show your passport?"
               },
               {
                 "speaker": "guest",
                 "text": "给你。",
                 "romanization": "Gěi nǐ.",
                 "meaning": "Here you are."
-              },
-              {
-                "speaker": "you",
-                "text": "谢谢。",
-                "romanization": "Xièxie.",
-                "meaning": "Thank you."
               }
             ]
           },
@@ -252,11 +252,17 @@
             "setting": "A guest puts their room card on the counter.",
             "dialogue": [
               {
+                "speaker": "guest",
+                "text": "你好，这是房卡。",
+                "romanization": "Nǐ hǎo, zhè shì fángkǎ.",
+                "meaning": "Hello, here's my room card."
+              },
+              {
                 "speaker": "you",
                 "uses_phrase": true,
-                "text": "您好，您是要退房吗？",
-                "romanization": "Nín hǎo, nín shì yào tuìfáng ma?",
-                "meaning": "Hello, are you checking out?"
+                "text": "谢谢。您是要退房吗？",
+                "romanization": "Xièxie. Nín shì yào tuìfáng ma?",
+                "meaning": "Thank you. Are you checking out?"
               },
               {
                 "speaker": "guest",
@@ -273,9 +279,9 @@
               "meaning": "Yes."
             },
             {
-              "text": "可以晚点退房吗？",
-              "romanization": "Kěyǐ wǎn diǎn tuìfáng ma?",
-              "meaning": "Can I check out late?"
+              "text": "对，能帮我叫辆出租车吗？",
+              "romanization": "Duì, néng bāng wǒ jiào liàng chūzūchē ma?",
+              "meaning": "Yes — could you call me a taxi?"
             }
           ]
         },
@@ -299,11 +305,17 @@
             "setting": "The guest has checked the bill.",
             "dialogue": [
               {
+                "speaker": "guest",
+                "text": "一共多少钱？",
+                "romanization": "Yígòng duōshao qián?",
+                "meaning": "How much is it altogether?"
+              },
+              {
                 "speaker": "you",
                 "uses_phrase": true,
                 "text": "一共是一千二百元。请问您刷卡还是付现金？",
                 "romanization": "Yígòng shì yìqiān èrbǎi yuán. Qǐngwèn nín shuākǎ háishi fù xiànjīn?",
-                "meaning": "The total is 1,200 yuan. Card or cash?"
+                "meaning": "The total is 1,200 yuan. Will you pay by card or cash?"
               },
               {
                 "speaker": "guest",

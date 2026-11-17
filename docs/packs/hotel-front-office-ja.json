@@ -43,23 +43,23 @@
             "setting": "A guest walks up to the front desk with their luggage.",
             "dialogue": [
               {
+                "speaker": "guest",
+                "text": "すみません、チェックインをお願いします。",
+                "romanization": "Sumimasen, chekku-in o onegai shimasu.",
+                "meaning": "Excuse me, I'd like to check in."
+              },
+              {
                 "speaker": "you",
                 "uses_phrase": true,
-                "text": "いらっしゃいませ。ご予約のお名前をお願いいたします。",
-                "romanization": "Irasshaimase. Go-yoyaku no o-namae o onegai itashimasu.",
-                "meaning": "Welcome. May I have the name on your booking?"
+                "text": "かしこまりました。ご予約のお名前をお願いいたします。",
+                "romanization": "Kashikomarimashita. Go-yoyaku no o-namae o onegai itashimasu.",
+                "meaning": "Certainly. May I have the name on your booking?"
               },
               {
                 "speaker": "guest",
                 "text": "田中です。",
                 "romanization": "Tanaka desu.",
                 "meaning": "It's Tanaka."
-              },
-              {
-                "speaker": "you",
-                "text": "田中様ですね。少々お待ちくださいませ。",
-                "romanization": "Tanaka-sama desu ne. Shōshō omachi kudasaimase.",
-                "meaning": "Mr/Ms Tanaka. One moment, please."
               }
             ]
           },
@@ -143,23 +143,23 @@
             "setting": "You have found the booking and need to register the guest.",
             "dialogue": [
               {
+                "speaker": "guest",
+                "text": "何か必要なものはありますか。",
+                "romanization": "Nani ka hitsuyō na mono wa arimasu ka.",
+                "meaning": "Do you need anything from me?"
+              },
+              {
                 "speaker": "you",
                 "uses_phrase": true,
-                "text": "パスポートを拝見してもよろしいでしょうか。",
-                "romanization": "Pasupōto o haiken shite mo yoroshii deshō ka.",
-                "meaning": "May I see your passport?"
+                "text": "はい、パスポートを拝見してもよろしいでしょうか。",
+                "romanization": "Hai, pasupōto o haiken shite mo yoroshii deshō ka.",
+                "meaning": "Yes, may I see your passport?"
               },
               {
                 "speaker": "guest",
                 "text": "はい、どうぞ。",
                 "romanization": "Hai, dōzo.",
                 "meaning": "Yes, here you are."
-              },
-              {
-                "speaker": "you",
-                "text": "ありがとうございます。",
-                "romanization": "Arigatō gozaimasu.",
-                "meaning": "Thank you."
               }
             ]
           },
@@ -170,9 +170,9 @@
               "meaning": "Yes, here you are."
             },
             {
-              "text": "部屋に置いてきました。",
-              "romanization": "Heya ni oite kimashita.",
-              "meaning": "I left it in my room."
+              "text": "今、出しますね。",
+              "romanization": "Ima, dashimasu ne.",
+              "meaning": "I'll get it out now."
             }
           ]
         },
@@ -299,11 +299,17 @@
             "setting": "The guest has checked the bill and nods.",
             "dialogue": [
               {
+                "speaker": "guest",
+                "text": "全部でいくらですか。",
+                "romanization": "Zenbu de ikura desu ka.",
+                "meaning": "How much is it in total?"
+              },
+              {
                 "speaker": "you",
                 "uses_phrase": true,
-                "text": "お支払い方法はいかがなさいますか。",
-                "romanization": "O-shiharai hōhō wa ikaga nasaimasu ka.",
-                "meaning": "How would you like to pay?"
+                "text": "二万四千円でございます。お支払い方法はいかがなさいますか。",
+                "romanization": "Niman yonsen-en de gozaimasu. O-shiharai hōhō wa ikaga nasaimasu ka.",
+                "meaning": "It's 24,000 yen. How would you like to pay?"
               },
               {
                 "speaker": "guest",

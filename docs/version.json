@@ -1,6 +1,6 @@
 {
-  "versionCode": 3,
-  "versionName": "0.3.0",
-  "apkUrl": "https://raw.githubusercontent.com/aadvark/Qonverse/main/docs/download/Qonverse-0.3.0.apk",
-  "notes": "Backup & restore (works between Android and the web app), a speed button on learning screens, Show guest card, starred phrases and search, pronunciation check, smarter review, hands-free shadow mode, daily reminder and a phrase-of-the-day widget."
+  "versionCode": 4,
+  "versionName": "0.3.1",
+  "apkUrl": "https://raw.githubusercontent.com/aadvark/Qonverse/main/docs/download/Qonverse-0.3.1.apk",
+  "notes": "Review answers are now full replies to what the guest says. The sample packs were revised so every conversation starts with the guest, with more natural replies. Easier-to-read selected answers."
 }

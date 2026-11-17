@@ -283,13 +283,14 @@ fun PracticeScreen(packId: String, close: () -> Unit) {
     val lang = q.pack.pack.targetLanguage
     val cue = q.phrase.example.dialogue.let { d ->
         val u = d.indexOfFirst { it.usesPhrase }
-        if (u > 0 && !d[u - 1].isYou) d[u - 1] else d.firstOrNull { !it.isYou }
+        // only what the guest says *before* your reply; otherwise describe the moment
+        if (u > 0 && !d[u - 1].isYou) d[u - 1] else null
     }
     val correct = picked?.id == q.phrase.id
 
     Column(Modifier.fillMaxSize().background(c.chatBg)) {
         Column(Modifier.fillMaxWidth().background(c.surface).padding(bottom = 10.dp)) {
-            TopBar(cue?.speaker?.replaceFirstChar { it.uppercase() }?.ifBlank { "Guest" } ?: "Guest", close) {
+            TopBar(cue?.speaker?.replaceFirstChar { it.uppercase() }?.ifBlank { "Guest" } ?: (q.phrase.example.dialogue.firstOrNull { !it.isYou }?.speaker?.replaceFirstChar { it.uppercase() } ?: "Guest"), close) {
                 SpeedChip()
                 Text("${index + 1}/${questions.size}", color = c.muted, fontSize = 13.sp, modifier = Modifier.padding(start = 4.dp, end = 10.dp))
             }
@@ -305,17 +306,25 @@ fun PracticeScreen(packId: String, close: () -> Unit) {
                     Text(q.phrase.example.setting, color = c.muted, fontSize = 12.sp,
                         modifier = Modifier.align(Alignment.CenterHorizontally).clip(RoundedCornerShape(999.dp)).background(c.surface).padding(horizontal = 12.dp, vertical = 5.dp))
                 }
-                // what the guest says (or the situation)
-                Bubble(false, Modifier.widthIn(max = 320.dp), fill = c.surface, border = c.box) {
-                    Row(verticalAlignment = Alignment.Top) {
-                        Box(Modifier.weight(1f, fill = false)) {
-                            if (cue != null) Tri(cue.text, cue.romanization, cue.meaning, 17)
-                            else Text(q.phrase.whenToUse, color = c.ink, fontSize = 15.sp)
+                // what the guest says, or (if your line comes first) the situation
+                if (cue != null) {
+                    Bubble(false, Modifier.widthIn(max = 320.dp), fill = c.surface, border = c.box) {
+                        Row(verticalAlignment = Alignment.Top) {
+                            Box(Modifier.weight(1f, fill = false)) { Tri(cue.text, cue.romanization, cue.meaning, 17) }
+                            HSpacer(8.dp); SpeakerButton({ app.say(cue.text, lang) }, 44.dp, "Hear them")
                         }
-                        if (cue != null) { HSpacer(8.dp); SpeakerButton({ app.say(cue.text, lang) }, 44.dp, "Hear them") }
+                    }
+                } else {
+                    Column(
+                        Modifier.fillMaxWidth().clip(RoundedCornerShape(18.dp)).background(c.boxSoft).padding(14.dp),
+                        verticalArrangement = Arrangement.spacedBy(6.dp),
+                    ) {
+                        Text("THE SITUATION", color = c.boxDeep, fontSize = 12.sp, fontWeight = FontWeight.Bold)
+                        Text(q.phrase.whenToUse, color = c.ink, fontSize = 15.sp, lineHeight = 21.sp)
+                        Text("What do you say?", color = c.boxText, fontSize = 15.sp, fontWeight = FontWeight.SemiBold)
                     }
                 }
-                if (picked == null) Text("Tap the phrase you need", color = c.muted, fontSize = 12.sp, fontWeight = FontWeight.SemiBold, modifier = Modifier.align(Alignment.End))
+                if (picked == null) Text("Tap the best reply", color = c.muted, fontSize = 12.sp, fontWeight = FontWeight.SemiBold, modifier = Modifier.align(Alignment.End))
                 q.options.forEach { o ->
                     val isRight = picked != null && o.id == q.phrase.id
                     val isWrong = picked != null && o.id == picked?.id && !isRight
@@ -323,20 +332,23 @@ fun PracticeScreen(packId: String, close: () -> Unit) {
                         Box(Modifier.align(Alignment.End).clickable(enabled = picked == null) {
                             picked = o
                             val right = o.id == q.phrase.id
-                            if (right) app.say(o.text, lang)
+                            if (right) app.say(replyLine(o).text, lang)
                             app.store.recordAnswer(q.pack.pack.id, q.phrase.id, right); app.progressTick++
                         }) {
+                            val reply = replyLine(o)
                             Bubble(
                                 true, Modifier.widthIn(max = 320.dp),
                                 fill = when { isRight -> c.box; isWrong -> c.dangerSoft; else -> c.boxFaint },
                                 border = when { isRight -> c.box; isWrong -> c.danger; else -> c.box.copy(alpha = 0.5f) },
                             ) {
-                                Tri(
-                                    o.text, o.romanization, o.meaning, 16,
-                                    color = if (isRight) c.onBox else c.ink,
-                                    subColor = if (isRight) c.onBox.copy(alpha = 0.85f) else c.sub,
-                                    mutedColor = if (isRight) c.onBox.copy(alpha = 0.85f) else c.muted,
-                                )
+                                Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
+                                    Text(
+                                        highlight(reply.text, o.text, if (isRight) c.onBox else c.boxText, c.audio),
+                                        color = if (isRight) c.onBox else c.ink, fontSize = 16.sp, lineHeight = 23.sp,
+                                    )
+                                    if (reply.romanization.isNotBlank()) Text(reply.romanization, color = if (isRight) c.onBox.copy(alpha = 0.9f) else c.sub, fontSize = 13.sp)
+                                    if (reply.meaning.isNotBlank()) Text(reply.meaning, color = if (isRight) c.onBox.copy(alpha = 0.9f) else c.muted, fontSize = 13.sp)
+                                }
                             }
                         }
                     }
@@ -349,20 +361,25 @@ fun PracticeScreen(packId: String, close: () -> Unit) {
                         ) {
                             Text("Spot on — now say it aloud", color = c.boxDeep, fontSize = 13.sp, fontWeight = FontWeight.SemiBold)
                             HSpacer(8.dp)
-                            SpeakerButton({ app.say(q.phrase.text, lang) }, 36.dp, "Hear it again")
+                            SpeakerButton({ app.say(replyLine(q.phrase).text, lang) }, 36.dp, "Hear it again")
                         }
                     } else {
-                        Text("Not quite — the right phrase is filled in. It'll come back later today.", color = c.dangerText, fontSize = 13.sp,
+                        Text("Not quite — the best reply is filled in. That phrase will come back later today.", color = c.dangerText, fontSize = 13.sp,
                             modifier = Modifier.clip(RoundedCornerShape(14.dp)).background(c.dangerSoft).padding(horizontal = 14.dp, vertical = 8.dp))
                     }
                 }
             }
         }
         Row(Modifier.fillMaxWidth().background(c.surface).padding(16.dp)) {
-            PrimaryButton(if (picked == null) "Pick a phrase" else "Next", Modifier.weight(1f), enabled = picked != null) { index++ }
+            PrimaryButton(if (picked == null) "Pick a reply" else "Next", Modifier.weight(1f), enabled = picked != null) { index++ }
         }
     }
 }
+
+/** What you would actually say: the conversation line that uses the phrase, else the example sentence, else the phrase. */
+private fun replyLine(ph: Phrase): com.kithandkeen.qonverse.data.Line =
+    ph.example.dialogue.firstOrNull { it.usesPhrase && it.isYou }?.let { com.kithandkeen.qonverse.data.Line(it.text, it.romanization, it.meaning) }
+        ?: ph.inASentence ?: com.kithandkeen.qonverse.data.Line(ph.text, ph.romanization, ph.meaning)
 
 // ================================================================ SETTINGS
 

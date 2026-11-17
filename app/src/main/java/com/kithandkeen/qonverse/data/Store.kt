@@ -6,6 +6,8 @@ import java.io.File
 
 /** Saves packs as JSON files on the phone, and keeps progress and settings in SharedPreferences. */
 private const val DAY = 24L * 60 * 60 * 1000
+/** Bump when the bundled sample packs are improved, so installed apps refresh them. */
+private const val SAMPLES_REV = 2
 /** Days until the next review for each box. */
 val INTERVALS = listOf(0, 1, 2, 4, 7, 15, 30, 60)
 
@@ -15,15 +17,18 @@ class Store(private val context: Context) {
     private val dir = File(context.filesDir, "packs").apply { mkdirs() }
     val prefs = context.getSharedPreferences("qonverse", Context.MODE_PRIVATE)
 
-    /** Copies the bundled sample packs the first time the app runs. */
+    /** Copies the bundled sample packs on first run, and refreshes them when the app ships improved versions. */
     fun seedSamples() {
-        if (prefs.getBoolean("seeded_v1", false)) return
+        val rev = prefs.getInt("samples_rev", if (prefs.getBoolean("seeded_v1", false)) 1 else 0)
+        if (rev >= SAMPLES_REV) return
+        val hidden = hidden()
         context.assets.list("packs")?.forEach { name ->
+            if (rev > 0 && name.removeSuffix(".json") in hidden) return@forEach
             context.assets.open("packs/$name").use { input ->
                 File(dir, name).outputStream().use { input.copyTo(it) }
             }
         }
-        prefs.edit().putBoolean("seeded_v1", true).apply()
+        prefs.edit().putBoolean("seeded_v1", true).putInt("samples_rev", SAMPLES_REV).apply()
     }
 
     fun loadAll(): List<PackFile> = dir.listFiles { f -> f.extension == "json" }

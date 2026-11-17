@@ -14,8 +14,8 @@ android {
         applicationId = "com.kithandkeen.qonverse"
         minSdk = 26
         targetSdk = 35
-        versionCode = 3
-        versionName = "0.3.0"
+        versionCode = 4
+        versionName = "0.3.1"
         buildConfigField("String", "UPDATE_URL", "\"https://raw.githubusercontent.com/aadvark/Qonverse/main/docs/version.json\"")
     }
 

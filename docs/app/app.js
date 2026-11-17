@@ -2,7 +2,7 @@
    Data stays in this browser (localStorage). Speech uses the browser's built-in voices (speechSynthesis). */
 (function () {
   'use strict';
-  var VERSION = '0.3.0';
+  var VERSION = '0.3.1';
   var app = document.getElementById('app');
   var LS = {
     get: function (k, d) { try { var v = localStorage.getItem('qv.' + k); return v == null ? d : JSON.parse(v); } catch (e) { return d; } },
@@ -370,6 +370,12 @@
       return { p: x.p, ph: x.ph, opts: shuffle(others.concat([x.ph])) };
     }) };
   }
+  /** What you would actually say: the conversation line that uses the phrase, else the example sentence. */
+  function replyLine(ph) {
+    var d = (ph.example && ph.example.dialogue) || [];
+    var l = d.filter(function (x) { return x.uses_phrase && String(x.speaker).toLowerCase() === 'you'; })[0];
+    return l || ph.in_a_sentence || { text: ph.text, romanization: ph.romanization, meaning: ph.meaning };
+  }
   function practiceScreen(id) {
     if (!state.practice || state.practice.id !== id) state.practice = buildPractice(id);
     var P = state.practice;
@@ -379,28 +385,32 @@
     }
     var q = P.qs[P.i], lang = q.p.pack.target_language, d = (q.ph.example && q.ph.example.dialogue) || [], u = -1;
     d.forEach(function (l, i) { if (u < 0 && l.uses_phrase) u = i; });
-    var cue = u > 0 && String(d[u - 1].speaker).toLowerCase() !== 'you' ? d[u - 1] : d.filter(function (l) { return String(l.speaker).toLowerCase() !== 'you'; })[0];
-    var who = cue ? cap(cue.speaker) : 'Guest', picked = P.picked, right = picked && picked === q.ph.id;
+    // only what the guest says *before* your reply; otherwise describe the moment
+    var cue = u > 0 && String(d[u - 1].speaker).toLowerCase() !== 'you' ? d[u - 1] : null;
+    var other = d.filter(function (l) { return String(l.speaker).toLowerCase() !== 'you'; })[0];
+    var who = cap((cue || other || { speaker: 'guest' }).speaker), picked = P.picked, right = picked && picked === q.ph.id;
     var opts = q.opts.map(function (o) {
       var isR = picked && o.id === q.ph.id, isW = picked && o.id === picked && !isR;
       if (picked && !isR && !isW) return '';
-      return '<button class="bubble ' + (isR ? 'right' : isW ? 'wrong' : 'choice') + '" data-pick="' + esc(o.id) + '"' + (picked ? ' disabled' : '') + ' style="max-width:88%;align-self:flex-end;font:inherit;color:inherit">' + tri(esc(o.text), o.romanization, o.meaning) + TAIL + '</button>';
+      var rl = replyLine(o);
+      return '<button class="bubble ' + (isR ? 'right' : isW ? 'wrong' : 'choice') + '" data-pick="' + esc(o.id) + '"' + (picked ? ' disabled' : '') + ' style="max-width:88%;align-self:flex-end;font:inherit;color:inherit">' + tri(highlight(rl.text, o.text), rl.romanization, rl.meaning) + TAIL + '</button>';
     }).join('');
     return '<div class="screen chat"><div style="background:var(--surface);padding-bottom:10px">' + topbar(who, '', speedChip() + '<span class="muted small" style="padding:0 10px 0 6px">' + (P.i + 1) + '/' + P.qs.length + '</span>') +
       '<div class="pad"><div class="bar" style="height:4px"><i style="width:' + Math.round(100 * (P.i + 1) / P.qs.length) + '%"></i></div></div></div>' +
       '<div class="pad stack" style="padding-top:16px;padding-bottom:110px;gap:12px">' + (q.ph.example && q.ph.example.setting ? '<div class="pill">' + esc(q.ph.example.setting) + '</div>' : '') +
-      '<div class="bubble-wrap theirs"><div class="bubble theirs"><div class="grow">' + (cue ? tri(esc(cue.text), cue.romanization, cue.meaning) : esc(q.ph.when_to_use)) + '</div>' + (cue ? speakBtn(cue.text, lang, 'Hear them') : '') + TAIL + '</div></div>' +
-      (picked ? '' : '<div class="muted tiny" style="align-self:flex-end;font-weight:600">Tap the phrase you need</div>') + opts +
+      (cue ? '<div class="bubble-wrap theirs"><div class="bubble theirs"><div class="grow">' + tri(esc(cue.text), cue.romanization, cue.meaning) + '</div>' + speakBtn(cue.text, lang, 'Hear them') + TAIL + '</div></div>'
+        : '<div class="when"><div class="label">The situation</div><div>' + esc(q.ph.when_to_use) + '</div><b style="color:var(--box-text)">What do you say?</b></div>') +
+      (picked ? '' : '<div class="muted tiny" style="align-self:flex-end;font-weight:600">Tap the best reply</div>') + opts +
       (picked ? (right ? '<div class="pill" style="background:var(--box-soft);color:var(--box-deep);font-weight:600;display:flex;align-items:center;gap:8px;padding:4px 4px 4px 14px">Spot on — now say it aloud ' + speakBtn(q.ph.text, lang, 'Hear it again') + '</div>'
-        : '<div class="err small" style="text-align:center">Not quite — the right phrase is filled in. It’ll come back later today.</div>') : '') +
-      '</div><div class="footerbar"><button class="btn primary block" id="nextQ"' + (picked ? '' : ' disabled') + '>' + (picked ? 'Next' : 'Pick a phrase') + '</button></div></div>';
+        : '<div class="err small" style="text-align:center">Not quite — the best reply is filled in. That phrase will come back later today.</div>') : '') +
+      '</div><div class="footerbar"><button class="btn primary block" id="nextQ"' + (picked ? '' : ' disabled') + '>' + (picked ? 'Next' : 'Pick a reply') + '</button></div></div>';
   }
   function bindPractice(id) {
     var P = state.practice; if (!P) return;
     app.querySelectorAll('[data-pick]').forEach(function (b) {
       b.onclick = function () {
         var q = P.qs[P.i]; P.picked = b.getAttribute('data-pick');
-        var ok = P.picked === q.ph.id; if (ok) say(q.ph.text, q.p.pack.target_language);
+        var ok = P.picked === q.ph.id; if (ok) say(replyLine(q.ph).text, q.p.pack.target_language);
         recordAnswer(q.p.pack.id, q.ph.id, ok);
         render();
       };

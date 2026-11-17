@@ -43,23 +43,23 @@
             "setting": "A guest walks up to the front desk with luggage.",
             "dialogue": [
               {
+                "speaker": "guest",
+                "text": "안녕하세요, 체크인하려고요.",
+                "romanization": "Annyeonghaseyo, chekeuinharyeogoyo.",
+                "meaning": "Hello, I'd like to check in."
+              },
+              {
                 "speaker": "you",
                 "uses_phrase": true,
-                "text": "어서 오십시오. 예약자 성함이 어떻게 되십니까?",
-                "romanization": "Eoseo osipsio. Yeyakja seonghami eotteoke doesimnikka?",
-                "meaning": "Welcome. What is the name on the booking?"
+                "text": "네, 예약자 성함이 어떻게 되십니까?",
+                "romanization": "Ne, yeyakja seonghami eotteoke doesimnikka?",
+                "meaning": "Certainly. What is the name on the booking?"
               },
               {
                 "speaker": "guest",
                 "text": "김민수입니다.",
                 "romanization": "Gim Minsu-imnida.",
                 "meaning": "It's Kim Minsu."
-              },
-              {
-                "speaker": "you",
-                "text": "네, 김민수 고객님. 잠시만 기다려 주십시오.",
-                "romanization": "Ne, Gim Minsu gogaengnim. Jamsiman gidaryeo jusipsio.",
-                "meaning": "Yes, Mr Kim Minsu. Please wait a moment."
               }
             ]
           },
@@ -143,23 +143,23 @@
             "setting": "You have found the booking and need to register the guest.",
             "dialogue": [
               {
+                "speaker": "guest",
+                "text": "뭐 필요한 거 있어요?",
+                "romanization": "Mwo piryohan geo isseoyo?",
+                "meaning": "Do you need anything from me?"
+              },
+              {
                 "speaker": "you",
                 "uses_phrase": true,
-                "text": "여권 확인 부탁드립니다.",
-                "romanization": "Yeogwon hwagin butakdeurimnida.",
-                "meaning": "May I check your passport, please?"
+                "text": "네, 여권 확인 부탁드립니다.",
+                "romanization": "Ne, yeogwon hwagin butakdeurimnida.",
+                "meaning": "Yes, may I check your passport, please?"
               },
               {
                 "speaker": "guest",
                 "text": "여기 있어요.",
                 "romanization": "Yeogi isseoyo.",
                 "meaning": "Here it is."
-              },
-              {
-                "speaker": "you",
-                "text": "감사합니다.",
-                "romanization": "Gamsahamnida.",
-                "meaning": "Thank you."
               }
             ]
           },
@@ -170,9 +170,9 @@
               "meaning": "Here it is."
             },
             {
-              "text": "방에 두고 왔어요.",
-              "romanization": "Bange dugo wasseoyo.",
-              "meaning": "I left it in the room."
+              "text": "잠시만요, 꺼낼게요.",
+              "romanization": "Jamsimanyo, kkeonaelgeyo.",
+              "meaning": "Just a moment, I'll get it out."
             }
           ]
         },
@@ -299,11 +299,17 @@
             "setting": "The guest has checked the bill.",
             "dialogue": [
               {
+                "speaker": "guest",
+                "text": "전부 얼마예요?",
+                "romanization": "Jeonbu eolmayeyo?",
+                "meaning": "How much is it in total?"
+              },
+              {
                 "speaker": "you",
                 "uses_phrase": true,
-                "text": "카드로 결제하시겠습니까?",
-                "romanization": "Kadeuro gyeoljehasigetseumnikka?",
-                "meaning": "Would you like to pay by card?"
+                "text": "총 이십사만 원입니다. 카드로 결제하시겠습니까?",
+                "romanization": "Chong isipsaman won-imnida. Kadeuro gyeoljehasigetseumnikka?",
+                "meaning": "The total is 240,000 won. Would you like to pay by card?"
               },
               {
                 "speaker": "guest",
