@@ -1,0 +1,426 @@
+{
+  "qonverse_pack_version": "1.2",
+  "pack": {
+    "id": "hotel-front-office-ko",
+    "title": "Hotel Front Office — Korean",
+    "description": "Formal Korean phrases for front desk staff serving hotel guests.",
+    "industry": "Hospitality",
+    "role": "Front office agent",
+    "audience": "Hotel guests",
+    "target_language": "ko-KR",
+    "romanization_system": "Revised Romanization",
+    "politeness": "very formal",
+    "learner_language": "en",
+    "level": "beginner",
+    "generated_by": "Qonverse sample pack (please have a native speaker review before real use)",
+    "created": "2026-11-17"
+  },
+  "scenarios": [
+    {
+      "id": "check-in",
+      "title": "Check-in",
+      "title_target": "체크인",
+      "title_romanization": "chekeuin",
+      "context": "Greeting arriving guests and finding their booking.",
+      "phrases": [
+        {
+          "id": "ko-check-in-01",
+          "text": "예약자 성함",
+          "romanization": "yeyakja seongham",
+          "meaning": "the name on the booking",
+          "literal": "",
+          "pattern": "",
+          "variants": [],
+          "politeness": "very formal",
+          "in_a_sentence": {
+            "text": "예약자 성함이 어떻게 되십니까?",
+            "romanization": "Yeyakja seonghami eotteoke doesimnikka?",
+            "meaning": "What is the name on the booking?"
+          },
+          "when_to_use": "When a guest arrives to check in and you need to find their reservation.",
+          "notes": "성함 (seongham) is the honorific word for 'name'.",
+          "example": {
+            "setting": "A guest walks up to the front desk with luggage.",
+            "dialogue": [
+              {
+                "speaker": "you",
+                "uses_phrase": true,
+                "text": "어서 오십시오. 예약자 성함이 어떻게 되십니까?",
+                "romanization": "Eoseo osipsio. Yeyakja seonghami eotteoke doesimnikka?",
+                "meaning": "Welcome. What is the name on the booking?"
+              },
+              {
+                "speaker": "guest",
+                "text": "김민수입니다.",
+                "romanization": "Gim Minsu-imnida.",
+                "meaning": "It's Kim Minsu."
+              },
+              {
+                "speaker": "you",
+                "text": "네, 김민수 고객님. 잠시만 기다려 주십시오.",
+                "romanization": "Ne, Gim Minsu gogaengnim. Jamsiman gidaryeo jusipsio.",
+                "meaning": "Yes, Mr Kim Minsu. Please wait a moment."
+              }
+            ]
+          },
+          "likely_responses": [
+            {
+              "text": "예약 안 했어요.",
+              "romanization": "Yeyak an haesseoyo.",
+              "meaning": "I didn't make a booking."
+            },
+            {
+              "text": "회사 이름으로 예약했어요.",
+              "romanization": "Hoesa ireumeuro yeyakhaesseoyo.",
+              "meaning": "I booked under the company name."
+            }
+          ]
+        },
+        {
+          "id": "ko-check-in-02",
+          "text": "잠시만 기다려 주십시오",
+          "romanization": "jamsiman gidaryeo jusipsio",
+          "meaning": "please wait a moment",
+          "literal": "",
+          "pattern": "",
+          "variants": [],
+          "politeness": "very formal",
+          "in_a_sentence": {
+            "text": "확인해 드리겠습니다. 잠시만 기다려 주십시오.",
+            "romanization": "Hwaginhae deurigetseumnida. Jamsiman gidaryeo jusipsio.",
+            "meaning": "I'll check for you. Please wait a moment."
+          },
+          "when_to_use": "Any time you need the guest to wait briefly.",
+          "notes": "",
+          "example": {
+            "setting": "You are searching for the guest's reservation.",
+            "dialogue": [
+              {
+                "speaker": "guest",
+                "text": "이수진으로 예약했어요.",
+                "romanization": "I Sujin-euro yeyakhaesseoyo.",
+                "meaning": "I booked under Lee Sujin."
+              },
+              {
+                "speaker": "you",
+                "uses_phrase": true,
+                "text": "확인해 드리겠습니다. 잠시만 기다려 주십시오.",
+                "romanization": "Hwaginhae deurigetseumnida. Jamsiman gidaryeo jusipsio.",
+                "meaning": "I'll check for you. Please wait a moment."
+              }
+            ]
+          },
+          "likely_responses": [
+            {
+              "text": "네.",
+              "romanization": "Ne.",
+              "meaning": "Okay."
+            },
+            {
+              "text": "오래 걸려요?",
+              "romanization": "Orae geollyeoyo?",
+              "meaning": "Will it take long?"
+            }
+          ]
+        },
+        {
+          "id": "ko-check-in-03",
+          "text": "여권 확인",
+          "romanization": "yeogwon hwagin",
+          "meaning": "passport check",
+          "literal": "",
+          "pattern": "",
+          "variants": [],
+          "politeness": "very formal",
+          "in_a_sentence": {
+            "text": "여권 확인 부탁드립니다.",
+            "romanization": "Yeogwon hwagin butakdeurimnida.",
+            "meaning": "May I check your passport, please?"
+          },
+          "when_to_use": "When registering a foreign guest.",
+          "notes": "",
+          "example": {
+            "setting": "You have found the booking and need to register the guest.",
+            "dialogue": [
+              {
+                "speaker": "you",
+                "uses_phrase": true,
+                "text": "여권 확인 부탁드립니다.",
+                "romanization": "Yeogwon hwagin butakdeurimnida.",
+                "meaning": "May I check your passport, please?"
+              },
+              {
+                "speaker": "guest",
+                "text": "여기 있어요.",
+                "romanization": "Yeogi isseoyo.",
+                "meaning": "Here it is."
+              },
+              {
+                "speaker": "you",
+                "text": "감사합니다.",
+                "romanization": "Gamsahamnida.",
+                "meaning": "Thank you."
+              }
+            ]
+          },
+          "likely_responses": [
+            {
+              "text": "여기 있어요.",
+              "romanization": "Yeogi isseoyo.",
+              "meaning": "Here it is."
+            },
+            {
+              "text": "방에 두고 왔어요.",
+              "romanization": "Bange dugo wasseoyo.",
+              "meaning": "I left it in the room."
+            }
+          ]
+        },
+        {
+          "id": "ko-check-in-04",
+          "text": "조식 시간",
+          "romanization": "josik sigan",
+          "meaning": "breakfast hours",
+          "literal": "",
+          "pattern": "",
+          "variants": [],
+          "politeness": "very formal",
+          "in_a_sentence": {
+            "text": "조식 시간은 7시부터 10시까지입니다.",
+            "romanization": "Josik siganeun ilgop-si-buteo yeol-si-kkaji-imnida.",
+            "meaning": "Breakfast is from 7 to 10."
+          },
+          "when_to_use": "When a guest asks about breakfast.",
+          "notes": "Hours use native Korean numbers: 일곱 시 (ilgop si) = 7 o'clock.",
+          "example": {
+            "setting": "A guest asks about breakfast while you hand over the key card.",
+            "dialogue": [
+              {
+                "speaker": "guest",
+                "text": "아침 식사는 몇 시예요?",
+                "romanization": "Achim siksaneun myeot si-yeyo?",
+                "meaning": "What time is breakfast?"
+              },
+              {
+                "speaker": "you",
+                "uses_phrase": true,
+                "text": "조식 시간은 7시부터 10시까지입니다. 2층입니다.",
+                "romanization": "Josik siganeun ilgop-si-buteo yeol-si-kkaji-imnida. I-cheung-imnida.",
+                "meaning": "Breakfast is from 7 to 10. It's on the 2nd floor."
+              }
+            ]
+          },
+          "likely_responses": [
+            {
+              "text": "요금에 포함돼 있어요?",
+              "romanization": "Yogeume pohamdwae isseoyo?",
+              "meaning": "Is it included in the rate?"
+            },
+            {
+              "text": "어디예요?",
+              "romanization": "Eodi-yeyo?",
+              "meaning": "Where is it?"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "check-out",
+      "title": "Check-out",
+      "title_target": "체크아웃",
+      "title_romanization": "chekeuaut",
+      "context": "Settling the bill and saying goodbye.",
+      "phrases": [
+        {
+          "id": "ko-check-out-01",
+          "text": "계산서",
+          "romanization": "gyesanseo",
+          "meaning": "the bill",
+          "literal": "",
+          "pattern": "",
+          "variants": [],
+          "politeness": "very formal",
+          "in_a_sentence": {
+            "text": "여기 계산서입니다.",
+            "romanization": "Yeogi gyesanseo-imnida.",
+            "meaning": "Here is your bill."
+          },
+          "when_to_use": "When you hand the guest their bill at check-out.",
+          "notes": "",
+          "example": {
+            "setting": "A guest returns the key card.",
+            "dialogue": [
+              {
+                "speaker": "guest",
+                "text": "체크아웃할게요.",
+                "romanization": "Chekeuauthalgeyo.",
+                "meaning": "I'll check out."
+              },
+              {
+                "speaker": "you",
+                "uses_phrase": true,
+                "text": "네, 여기 계산서입니다.",
+                "romanization": "Ne, yeogi gyesanseo-imnida.",
+                "meaning": "Yes, here is your bill."
+              }
+            ]
+          },
+          "likely_responses": [
+            {
+              "text": "이건 무슨 요금이에요?",
+              "romanization": "Igeon museun yogeum-ieyo?",
+              "meaning": "What is this charge?"
+            },
+            {
+              "text": "카드 돼요?",
+              "romanization": "Kadeu dwaeyo?",
+              "meaning": "Can I use a card?"
+            }
+          ]
+        },
+        {
+          "id": "ko-check-out-02",
+          "text": "카드로 결제",
+          "romanization": "kadeuro gyeolje",
+          "meaning": "paying by card",
+          "literal": "",
+          "pattern": "",
+          "variants": [],
+          "politeness": "very formal",
+          "in_a_sentence": {
+            "text": "카드로 결제하시겠습니까?",
+            "romanization": "Kadeuro gyeoljehasigetseumnikka?",
+            "meaning": "Would you like to pay by card?"
+          },
+          "when_to_use": "After showing the bill, to ask how the guest will pay.",
+          "notes": "",
+          "example": {
+            "setting": "The guest has checked the bill.",
+            "dialogue": [
+              {
+                "speaker": "you",
+                "uses_phrase": true,
+                "text": "카드로 결제하시겠습니까?",
+                "romanization": "Kadeuro gyeoljehasigetseumnikka?",
+                "meaning": "Would you like to pay by card?"
+              },
+              {
+                "speaker": "guest",
+                "text": "네, 카드로 할게요.",
+                "romanization": "Ne, kadeuro halgeyo.",
+                "meaning": "Yes, by card."
+              }
+            ]
+          },
+          "likely_responses": [
+            {
+              "text": "네, 카드로 할게요.",
+              "romanization": "Ne, kadeuro halgeyo.",
+              "meaning": "Yes, by card."
+            },
+            {
+              "text": "현금으로 할게요.",
+              "romanization": "Hyeongeumeuro halgeyo.",
+              "meaning": "I'll pay in cash."
+            }
+          ]
+        },
+        {
+          "id": "ko-check-out-03",
+          "text": "짐 보관",
+          "romanization": "jim bogwan",
+          "meaning": "luggage storage",
+          "literal": "",
+          "pattern": "",
+          "variants": [],
+          "politeness": "very formal",
+          "in_a_sentence": {
+            "text": "짐 보관 도와드릴까요?",
+            "romanization": "Jim bogwan dowadeurilkkayo?",
+            "meaning": "Shall I store your luggage for you?"
+          },
+          "when_to_use": "When a checked-out guest still has time before leaving.",
+          "notes": "",
+          "example": {
+            "setting": "The guest says their flight is in the evening.",
+            "dialogue": [
+              {
+                "speaker": "guest",
+                "text": "비행기가 저녁이에요.",
+                "romanization": "Bihaenggiga jeonyeog-ieyo.",
+                "meaning": "My flight is in the evening."
+              },
+              {
+                "speaker": "you",
+                "uses_phrase": true,
+                "text": "짐 보관 도와드릴까요?",
+                "romanization": "Jim bogwan dowadeurilkkayo?",
+                "meaning": "Shall I store your luggage for you?"
+              }
+            ]
+          },
+          "likely_responses": [
+            {
+              "text": "네, 부탁해요.",
+              "romanization": "Ne, butakaeyo.",
+              "meaning": "Yes, please."
+            },
+            {
+              "text": "몇 시까지 돼요?",
+              "romanization": "Myeot si-kkaji dwaeyo?",
+              "meaning": "Until what time?"
+            }
+          ]
+        },
+        {
+          "id": "ko-check-out-04",
+          "text": "또 방문해 주십시오",
+          "romanization": "tto bangmunhae jusipsio",
+          "meaning": "please visit again",
+          "literal": "",
+          "pattern": "",
+          "variants": [],
+          "politeness": "very formal",
+          "in_a_sentence": {
+            "text": "이용해 주셔서 감사합니다. 또 방문해 주십시오.",
+            "romanization": "Iyonghae jusyeoseo gamsahamnida. Tto bangmunhae jusipsio.",
+            "meaning": "Thank you for staying with us. Please visit again."
+          },
+          "when_to_use": "The standard farewell as the guest leaves.",
+          "notes": "",
+          "example": {
+            "setting": "Check-out is complete.",
+            "dialogue": [
+              {
+                "speaker": "guest",
+                "text": "감사합니다. 안녕히 계세요.",
+                "romanization": "Gamsahamnida. Annyeonghi gyeseyo.",
+                "meaning": "Thank you. Goodbye."
+              },
+              {
+                "speaker": "you",
+                "uses_phrase": true,
+                "text": "이용해 주셔서 감사합니다. 또 방문해 주십시오.",
+                "romanization": "Iyonghae jusyeoseo gamsahamnida. Tto bangmunhae jusipsio.",
+                "meaning": "Thank you for staying with us. Please visit again."
+              }
+            ]
+          },
+          "likely_responses": [
+            {
+              "text": "또 올게요.",
+              "romanization": "Tto olgeyo.",
+              "meaning": "I'll come again."
+            },
+            {
+              "text": "감사합니다.",
+              "romanization": "Gamsahamnida.",
+              "meaning": "Thank you."
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

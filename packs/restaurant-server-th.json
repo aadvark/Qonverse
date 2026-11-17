@@ -1,0 +1,414 @@
+{
+  "qonverse_pack_version": "1.2",
+  "pack": {
+    "id": "restaurant-server-th",
+    "title": "Restaurant Server — Thai",
+    "description": "Polite Thai phrases for restaurant staff serving diners.",
+    "industry": "Food & beverage",
+    "role": "Restaurant server",
+    "audience": "Diners",
+    "target_language": "th-TH",
+    "romanization_system": "Royal Thai General System (no tone marks)",
+    "politeness": "polite",
+    "learner_language": "en",
+    "level": "beginner",
+    "generated_by": "Qonverse sample pack (please have a native speaker review before real use)",
+    "created": "2026-11-17"
+  },
+  "scenarios": [
+    {
+      "id": "seating",
+      "title": "Welcome & seating",
+      "title_target": "ต้อนรับลูกค้า",
+      "title_romanization": "ton rap luk kha",
+      "context": "Greeting diners, seating them and taking drink orders.",
+      "phrases": [
+        {
+          "id": "th-seating-01",
+          "text": "กี่ท่าน",
+          "romanization": "ki than",
+          "meaning": "how many people (polite)",
+          "literal": "",
+          "pattern": "",
+          "variants": [],
+          "politeness": "polite",
+          "in_a_sentence": {
+            "text": "สวัสดีค่ะ กี่ท่านคะ",
+            "romanization": "Sawatdi kha, ki than kha?",
+            "meaning": "Hello, how many people?"
+          },
+          "when_to_use": "As diners walk in, before you seat them.",
+          "notes": "Female staff end with ค่ะ/คะ (kha); male staff end with ครับ (khrap). ท่าน (than) is the polite word for 'person'.",
+          "example": {
+            "setting": "A group walks into the restaurant.",
+            "dialogue": [
+              {
+                "speaker": "you",
+                "uses_phrase": true,
+                "text": "สวัสดีค่ะ กี่ท่านคะ",
+                "romanization": "Sawatdi kha, ki than kha?",
+                "meaning": "Hello, how many people?"
+              },
+              {
+                "speaker": "guest",
+                "text": "สามคนครับ",
+                "romanization": "Sam khon khrap.",
+                "meaning": "Three people."
+              }
+            ]
+          },
+          "likely_responses": [
+            {
+              "text": "สามคนครับ",
+              "romanization": "Sam khon khrap.",
+              "meaning": "Three people."
+            },
+            {
+              "text": "มีจองไว้ครับ",
+              "romanization": "Mi chong wai khrap.",
+              "meaning": "We have a booking."
+            }
+          ]
+        },
+        {
+          "id": "th-seating-02",
+          "text": "เชิญทางนี้",
+          "romanization": "choen thang ni",
+          "meaning": "this way, please",
+          "literal": "",
+          "pattern": "",
+          "variants": [],
+          "politeness": "polite",
+          "in_a_sentence": {
+            "text": "เชิญทางนี้ค่ะ",
+            "romanization": "Choen thang ni kha.",
+            "meaning": "This way, please."
+          },
+          "when_to_use": "When leading diners to their table.",
+          "notes": "Female staff end with ค่ะ/คะ (kha); male staff end with ครับ (khrap).",
+          "example": {
+            "setting": "You have a table ready for the group.",
+            "dialogue": [
+              {
+                "speaker": "guest",
+                "text": "สองคนครับ",
+                "romanization": "Song khon khrap.",
+                "meaning": "Two people."
+              },
+              {
+                "speaker": "you",
+                "uses_phrase": true,
+                "text": "เชิญทางนี้ค่ะ",
+                "romanization": "Choen thang ni kha.",
+                "meaning": "This way, please."
+              }
+            ]
+          },
+          "likely_responses": [
+            {
+              "text": "ขอโต๊ะริมหน้าต่างได้ไหม",
+              "romanization": "Kho to rim na tang dai mai?",
+              "meaning": "Can we have a window table?"
+            },
+            {
+              "text": "ขอบคุณครับ",
+              "romanization": "Khop khun khrap.",
+              "meaning": "Thank you."
+            }
+          ]
+        },
+        {
+          "id": "th-seating-03",
+          "text": "รับเครื่องดื่ม",
+          "romanization": "rap khrueang duem",
+          "meaning": "to have a drink",
+          "literal": "",
+          "pattern": "",
+          "variants": [],
+          "politeness": "polite",
+          "in_a_sentence": {
+            "text": "รับเครื่องดื่มอะไรดีคะ",
+            "romanization": "Rap khrueang duem arai di kha?",
+            "meaning": "What would you like to drink?"
+          },
+          "when_to_use": "After seating diners and handing over menus.",
+          "notes": "Female staff end with ค่ะ/คะ (kha); male staff end with ครับ (khrap). รับ (rap) literally means 'receive'; it is the polite way to offer.",
+          "example": {
+            "setting": "The diners have just sat down.",
+            "dialogue": [
+              {
+                "speaker": "you",
+                "uses_phrase": true,
+                "text": "รับเครื่องดื่มอะไรดีคะ",
+                "romanization": "Rap khrueang duem arai di kha?",
+                "meaning": "What would you like to drink?"
+              },
+              {
+                "speaker": "guest",
+                "text": "ขอน้ำเปล่าสองขวดครับ",
+                "romanization": "Kho nam plao song khuat khrap.",
+                "meaning": "Two bottles of water, please."
+              }
+            ]
+          },
+          "likely_responses": [
+            {
+              "text": "ขอน้ำเปล่าครับ",
+              "romanization": "Kho nam plao khrap.",
+              "meaning": "Water, please."
+            },
+            {
+              "text": "ขอดูเมนูก่อนครับ",
+              "romanization": "Kho du menu kon khrap.",
+              "meaning": "Let me look at the menu first."
+            }
+          ]
+        },
+        {
+          "id": "th-seating-04",
+          "text": "ทานเผ็ดได้ไหม",
+          "romanization": "than phet dai mai",
+          "meaning": "can you eat spicy food?",
+          "literal": "",
+          "pattern": "",
+          "variants": [],
+          "politeness": "polite",
+          "in_a_sentence": {
+            "text": "ทานเผ็ดได้ไหมคะ",
+            "romanization": "Than phet dai mai kha?",
+            "meaning": "Can you eat spicy food?"
+          },
+          "when_to_use": "When a diner orders a dish that is usually spicy.",
+          "notes": "Female staff end with ค่ะ/คะ (kha); male staff end with ครับ (khrap). ทาน (than) is the polite word for 'eat'.",
+          "example": {
+            "setting": "A diner orders som tam (papaya salad).",
+            "dialogue": [
+              {
+                "speaker": "guest",
+                "text": "ขอส้มตำหนึ่งจานครับ",
+                "romanization": "Kho som tam nueng chan khrap.",
+                "meaning": "One papaya salad, please."
+              },
+              {
+                "speaker": "you",
+                "uses_phrase": true,
+                "text": "ทานเผ็ดได้ไหมคะ",
+                "romanization": "Than phet dai mai kha?",
+                "meaning": "Can you eat spicy food?"
+              }
+            ]
+          },
+          "likely_responses": [
+            {
+              "text": "เผ็ดน้อยครับ",
+              "romanization": "Phet noi khrap.",
+              "meaning": "A little spicy, please."
+            },
+            {
+              "text": "ไม่เผ็ดครับ",
+              "romanization": "Mai phet khrap.",
+              "meaning": "Not spicy, please."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "bill",
+      "title": "Bill & goodbye",
+      "title_target": "เช็กบิล",
+      "title_romanization": "chek bin",
+      "context": "Bringing the bill, taking payment and saying goodbye.",
+      "phrases": [
+        {
+          "id": "th-bill-01",
+          "text": "เช็กบิล",
+          "romanization": "chek bin",
+          "meaning": "the bill (to check the bill)",
+          "literal": "",
+          "pattern": "",
+          "variants": [],
+          "politeness": "polite",
+          "in_a_sentence": {
+            "text": "เช็กบิลเลยไหมคะ",
+            "romanization": "Chek bin loei mai kha?",
+            "meaning": "Shall I bring the bill now?"
+          },
+          "when_to_use": "When diners have finished eating.",
+          "notes": "Female staff end with ค่ะ/คะ (kha); male staff end with ครับ (khrap).",
+          "example": {
+            "setting": "You clear the plates from a table that has finished.",
+            "dialogue": [
+              {
+                "speaker": "you",
+                "uses_phrase": true,
+                "text": "เช็กบิลเลยไหมคะ",
+                "romanization": "Chek bin loei mai kha?",
+                "meaning": "Shall I bring the bill now?"
+              },
+              {
+                "speaker": "guest",
+                "text": "ครับ เช็กบิลด้วยครับ",
+                "romanization": "Khrap, chek bin duai khrap.",
+                "meaning": "Yes, the bill please."
+              }
+            ]
+          },
+          "likely_responses": [
+            {
+              "text": "เช็กบิลด้วยครับ",
+              "romanization": "Chek bin duai khrap.",
+              "meaning": "The bill, please."
+            },
+            {
+              "text": "ขอของหวานก่อนครับ",
+              "romanization": "Kho khong wan kon khrap.",
+              "meaning": "Dessert first, please."
+            }
+          ]
+        },
+        {
+          "id": "th-bill-02",
+          "text": "จ่ายด้วยบัตร",
+          "romanization": "chai duai bat",
+          "meaning": "pay by card",
+          "literal": "",
+          "pattern": "",
+          "variants": [],
+          "politeness": "polite",
+          "in_a_sentence": {
+            "text": "จ่ายด้วยบัตรได้ค่ะ",
+            "romanization": "Chai duai bat dai kha.",
+            "meaning": "You can pay by card."
+          },
+          "when_to_use": "When a diner asks how they can pay.",
+          "notes": "Female staff end with ค่ะ/คะ (kha); male staff end with ครับ (khrap).",
+          "example": {
+            "setting": "A diner looks at the bill and asks about paying.",
+            "dialogue": [
+              {
+                "speaker": "guest",
+                "text": "จ่ายด้วยบัตรได้ไหมครับ",
+                "romanization": "Chai duai bat dai mai khrap?",
+                "meaning": "Can I pay by card?"
+              },
+              {
+                "speaker": "you",
+                "uses_phrase": true,
+                "text": "จ่ายด้วยบัตรได้ค่ะ",
+                "romanization": "Chai duai bat dai kha.",
+                "meaning": "You can pay by card."
+              }
+            ]
+          },
+          "likely_responses": [
+            {
+              "text": "โอนเงินได้ไหมครับ",
+              "romanization": "On ngoen dai mai khrap?",
+              "meaning": "Can I pay by bank transfer?"
+            },
+            {
+              "text": "แยกบิลได้ไหมครับ",
+              "romanization": "Yaek bin dai mai khrap?",
+              "meaning": "Can we split the bill?"
+            }
+          ]
+        },
+        {
+          "id": "th-bill-03",
+          "text": "รอสักครู่",
+          "romanization": "ro sak khru",
+          "meaning": "wait a moment",
+          "literal": "",
+          "pattern": "",
+          "variants": [],
+          "politeness": "polite",
+          "in_a_sentence": {
+            "text": "รอสักครู่นะคะ",
+            "romanization": "Ro sak khru na kha.",
+            "meaning": "Just a moment, please."
+          },
+          "when_to_use": "Any time the diner needs to wait briefly.",
+          "notes": "Female staff end with ค่ะ/คะ (kha); male staff end with ครับ (khrap).",
+          "example": {
+            "setting": "You take the card to the payment machine.",
+            "dialogue": [
+              {
+                "speaker": "guest",
+                "text": "นี่บัตรครับ",
+                "romanization": "Ni bat khrap.",
+                "meaning": "Here's the card."
+              },
+              {
+                "speaker": "you",
+                "uses_phrase": true,
+                "text": "รอสักครู่นะคะ",
+                "romanization": "Ro sak khru na kha.",
+                "meaning": "Just a moment, please."
+              }
+            ]
+          },
+          "likely_responses": [
+            {
+              "text": "ครับ",
+              "romanization": "Khrap.",
+              "meaning": "Okay."
+            },
+            {
+              "text": "ไม่ต้องรีบครับ",
+              "romanization": "Mai tong rip khrap.",
+              "meaning": "No rush."
+            }
+          ]
+        },
+        {
+          "id": "th-bill-04",
+          "text": "ขอบคุณที่มาอุดหนุน",
+          "romanization": "khop khun thi ma ut nun",
+          "meaning": "thank you for your custom",
+          "literal": "",
+          "pattern": "",
+          "variants": [],
+          "politeness": "polite",
+          "in_a_sentence": {
+            "text": "ขอบคุณที่มาอุดหนุนนะคะ",
+            "romanization": "Khop khun thi ma ut nun na kha.",
+            "meaning": "Thank you for coming to eat with us."
+          },
+          "when_to_use": "As diners leave the restaurant.",
+          "notes": "Female staff end with ค่ะ/คะ (kha); male staff end with ครับ (khrap).",
+          "example": {
+            "setting": "The diners stand up to leave.",
+            "dialogue": [
+              {
+                "speaker": "guest",
+                "text": "อร่อยมากครับ",
+                "romanization": "Aroi mak khrap.",
+                "meaning": "It was delicious."
+              },
+              {
+                "speaker": "you",
+                "uses_phrase": true,
+                "text": "ขอบคุณที่มาอุดหนุนนะคะ",
+                "romanization": "Khop khun thi ma ut nun na kha.",
+                "meaning": "Thank you for coming to eat with us."
+              }
+            ]
+          },
+          "likely_responses": [
+            {
+              "text": "แล้วจะมาอีกครับ",
+              "romanization": "Laeo cha ma ik khrap.",
+              "meaning": "We'll come again."
+            },
+            {
+              "text": "ขอบคุณครับ",
+              "romanization": "Khop khun khrap.",
+              "meaning": "Thank you."
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

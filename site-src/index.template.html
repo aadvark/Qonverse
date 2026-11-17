@@ -1,0 +1,221 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Qonverse — learn the phrases your job needs</title>
+<meta name="description" content="Qonverse is a free, open source Android app for learning the short spoken phrases you need at work, in any language. Make a phrase pack with any AI, then listen, imitate and practise.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Crect width='40' height='40' rx='10' fill='%237464B8'/%3E%3Cg transform='translate(5 5) scale(.75)'%3E%3Ccircle cx='19' cy='19' r='13.5' fill='none' stroke='white' stroke-width='5'/%3E%3Cpath d='M24 31.2 Q28.6 37.2 38 37.6 Q32.6 33.2 31.4 24' fill='white'/%3E%3C/g%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Plus+Jakarta+Sans:wght@700;800&display=swap">
+<style>
+:root{
+  --bg:#FBFBFD; --surface:#FFFFFF; --ink:#15171C; --muted:#5B6070; --line:#E4E2DC;
+  --box:#7464B8; --box-text:#5D4E9E; --box-deep:#4A3E80; --box-soft:#F1EEF8;
+  --audio:#B8D98A; --audio-text:#557A2E; --orange:#DDA855;
+}
+@media (prefers-color-scheme: dark){
+  :root{ --bg:#101315; --surface:#1A1E21; --ink:#ECEDEA; --muted:#A2A8AE; --line:#2C3236;
+    --box:#565C9E; --box-text:#A9B0D8; --box-deep:#C5CAE6; --box-soft:#1F2035; --audio:#6FB8AE; --audio-text:#6FB8AE; }
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 Inter,system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+a{color:var(--box-text)}
+a:hover{color:var(--box-deep)}
+h1,h2,h3{font-family:"Plus Jakarta Sans",Inter,sans-serif;letter-spacing:-.02em;line-height:1.15;margin:0}
+.wrap{max-width:1120px;margin:0 auto;padding:0 24px}
+.cubes{position:absolute;inset:0;z-index:-1;pointer-events:none;color:var(--box);opacity:.22;
+  -webkit-mask-image:linear-gradient(to top,#000 0%,rgba(0,0,0,.7) 35%,rgba(0,0,0,.25) 65%,transparent 92%);
+          mask-image:linear-gradient(to top,#000 0%,rgba(0,0,0,.7) 35%,rgba(0,0,0,.25) 65%,transparent 92%)}
+header.top{display:flex;align-items:center;justify-content:space-between;padding:20px 0}
+.logo{display:flex;align-items:center;font:800 26px/1 "Plus Jakarta Sans",sans-serif;letter-spacing:-.02em;color:var(--ink);text-decoration:none}
+.logo svg{flex:none}
+.logo span{margin-left:-.06em}
+nav.links{display:flex;gap:22px;flex-wrap:wrap}
+nav.links a{color:var(--muted);text-decoration:none;font-weight:500}
+nav.links a:hover{color:var(--ink)}
+.hero{position:relative;isolation:isolate;padding:48px 0 72px;overflow:hidden}
+.hero-grid{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);gap:48px;align-items:center}
+.eyebrow{display:inline-block;background:var(--box-soft);color:var(--box-text);font-weight:600;font-size:14px;border-radius:999px;padding:6px 14px}
+.hero h1{font-size:clamp(38px,5.4vw,60px);margin:18px 0 18px}
+.hero h1 em{font-style:normal;color:var(--box-text)}
+.lead{font-size:19px;color:var(--muted);max-width:560px;margin:0 0 28px}
+.cta{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+.btn{display:inline-flex;align-items:center;gap:10px;min-height:52px;padding:0 22px;border-radius:16px;font-weight:600;font-size:16px;text-decoration:none;border:1px solid transparent;cursor:pointer;font-family:inherit}
+.btn-primary{background:var(--box);color:#fff}
+.btn-primary:hover{color:#fff;filter:brightness(1.07)}
+.btn-ghost{background:var(--surface);color:var(--ink);border-color:var(--line)}
+.btn-ghost:hover{color:var(--ink);border-color:var(--box)}
+.fine{font-size:13.5px;color:var(--muted);margin-top:14px}
+.phones{display:flex;gap:18px;justify-content:center;align-items:flex-start}
+.phone{width:min(240px,30vw);border-radius:28px;overflow:hidden;border:1px solid var(--line);background:var(--surface);box-shadow:0 18px 50px rgba(21,23,28,.12)}
+.phone img{display:block;width:100%;height:auto}
+.phone.lift{margin-top:48px}
+section{padding:72px 0}
+.sec-title{font-size:clamp(28px,3.6vw,40px);margin-bottom:12px}
+.sec-lead{color:var(--muted);font-size:18px;max-width:640px;margin:0 0 36px}
+.steps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:22px;padding:24px}
+.num{width:36px;height:36px;border-radius:18px;background:var(--box);color:#fff;font-weight:700;display:flex;align-items:center;justify-content:center;margin-bottom:14px}
+.card h3{font-size:20px;margin-bottom:8px}
+.card p{margin:0;color:var(--muted)}
+.prompt-box{margin-top:20px;background:var(--box-soft);border-radius:22px;padding:22px;display:flex;gap:16px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+.prompt-box p{margin:0;color:var(--box-deep);font-weight:500;max-width:620px}
+details{margin-top:14px}
+details summary{cursor:pointer;color:var(--box-text);font-weight:600;min-height:44px;display:flex;align-items:center}
+details pre{white-space:pre-wrap;background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:18px;font-size:13px;max-height:420px;overflow:auto}
+.features{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px}
+.feat .ico{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;margin-bottom:14px}
+.ico.box{background:var(--box-soft);color:var(--box-text)}
+.ico.audio{background:var(--audio);color:#15171C}
+.packs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px}
+.pack .badge{width:56px;height:56px;border-radius:14px;background:var(--box-soft);color:var(--box-text);font-weight:700;display:flex;align-items:center;justify-content:center;margin-bottom:14px}
+.pack h3{font-size:17px;margin-bottom:4px}
+.pack .sample{margin:14px 0;padding:12px 14px;border-radius:14px;background:var(--bg);border:1px solid var(--line)}
+.pack .sample b{display:block;font-size:20px;font-weight:600}
+.pack .sample span{display:block;font-size:13.5px;color:var(--muted)}
+.pack a{font-weight:600;font-size:14.5px}
+.split{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:20px}
+ol.install{margin:0;padding-left:20px;color:var(--muted)}
+ol.install li{margin:6px 0}
+.dl-card{background:var(--box);color:#fff;border-radius:22px;padding:28px;display:flex;flex-direction:column;gap:12px}
+.dl-card h3{font-size:24px;color:#fff}
+.dl-card p{margin:0;color:rgba(255,255,255,.9)}
+.dl-card .btn{background:#fff;color:var(--box-deep);align-self:flex-start}
+.dl-card code{font-size:12px;word-break:break-all;color:rgba(255,255,255,.85)}
+footer{padding:40px 0 56px;border-top:1px solid var(--line);color:var(--muted);font-size:14px}
+footer .row{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;align-items:center}
+@media (max-width:900px){
+  .hero-grid,.split{grid-template-columns:1fr}
+  .steps,.features{grid-template-columns:1fr}
+  .packs{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .phone{width:min(200px,42vw)} .phone.hide-sm{display:none}
+}
+@media (max-width:520px){ .packs{grid-template-columns:1fr} nav.links{display:none} }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <svg class="cubes" aria-hidden="true" width="100%" height="100%"><defs><pattern id="cube" width="29.445" height="51" patternUnits="userSpaceOnUse"><path d="M0 8.5 L14.72 0 L29.445 8.5 M0 8.5 L14.72 17 L29.445 8.5 M14.72 17 V34 M0 8.5 V25.5 L14.72 34 L29.445 25.5 V8.5 M14.72 34 V51 M0 25.5 V42.5 L14.72 51 L29.445 42.5 V25.5" fill="none" stroke="currentColor" stroke-width="1" stroke-linejoin="round"/></pattern></defs><rect width="100%" height="100%" fill="url(#cube)"/></svg>
+  <div class="wrap">
+    <header class="top">
+      <a class="logo" href="#" aria-label="Qonverse home">
+        <svg width="28" height="28" viewBox="0 0 40 40" fill="none" aria-hidden="true"><circle cx="19" cy="19" r="13.5" stroke="var(--box)" stroke-width="5.5"/><path d="M24 31.2 Q28.6 37.2 38 37.6 Q32.6 33.2 31.4 24" fill="var(--box)" stroke="var(--box)" stroke-width="2" stroke-linejoin="round"/></svg><span>onverse</span>
+      </a>
+      <nav class="links" aria-label="Page sections">
+        <a href="#how">How it works</a><a href="#packs">Sample packs</a><a href="#download">Download</a><a href="https://github.com/aadvark/Qonverse">GitHub</a>
+      </nav>
+    </header>
+    <div class="hero-grid">
+      <div>
+        <span class="eyebrow">Free &amp; open source · Android</span>
+        <h1>Learn the phrases <em>your job</em> needs — in any language.</h1>
+        <p class="lead">Front desk, restaurant floor, shop, ward or taxi: make a phrase pack for your work with any AI, then listen, imitate and practise with your phone's own voices.</p>
+        <div class="cta">
+          <a class="btn btn-primary" href="download/Qonverse-__VERSION__.apk" download>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg>
+            Download APK
+          </a>
+          <a class="btn btn-ghost" href="https://github.com/aadvark/Qonverse">View on GitHub</a>
+        </div>
+        <p class="fine">Version __VERSION__ · __SIZE__ · Android 8.0 or newer · No account, no ads, no tracking</p>
+      </div>
+      <div class="phones">
+        <div class="phone"><img src="img/03-phrase.webp" width="540" height="1169" alt="Phrase screen showing ご予約のお名前 with romaji, meaning, an example sentence and a big play button"></div>
+        <div class="phone lift"><img src="img/04-practice.webp" width="540" height="1169" alt="Chat-style review: the guest asks where breakfast is and you pick the right phrase"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<section id="how">
+  <div class="wrap">
+    <h2 class="sec-title">How it works</h2>
+    <p class="sec-lead">Qonverse doesn't run any AI itself. You use the AI you already like to write a pack for your exact job, and Qonverse turns it into lessons with sound.</p>
+    <div class="steps">
+      <div class="card"><div class="num">1</div><h3>Copy our prompt</h3><p>Paste it into Claude, ChatGPT, Gemini or any AI chat. It asks about your job, the language and the situations you face.</p></div>
+      <div class="card"><div class="num">2</div><h3>Get your pack</h3><p>The AI writes short phrases with transliteration, meaning, an example sentence, a mini conversation and the replies you'll hear.</p></div>
+      <div class="card"><div class="num">3</div><h3>Paste it into Qonverse</h3><p>Listen at normal or slow speed, loop it, imitate it, then practise in a chat with a guest until each phrase feels familiar.</p></div>
+    </div>
+    <div class="prompt-box">
+      <p>The prompt is open source too. Copy it now, or open it on GitHub.</p>
+      <div class="cta">
+        <button class="btn btn-primary" id="copy" type="button">Copy the prompt</button>
+        <a class="btn btn-ghost" href="https://github.com/aadvark/Qonverse/blob/main/prompts/pack-generator-prompt.md">Open on GitHub</a>
+      </div>
+    </div>
+    <details><summary>Read the prompt</summary><pre id="prompt">__PROMPT__</pre></details>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2 class="sec-title">Made for busy shifts</h2>
+    <p class="sec-lead">Short sessions, big buttons, and sound first.</p>
+    <div class="features">
+      <div class="card feat"><div class="ico audio"><svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg></div><h3>Listen and imitate</h3><p>Every phrase, sentence and reply can be played. Slow it to 0.6× or loop it three times while you repeat.</p></div>
+      <div class="card feat"><div class="ico box"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 6h16M4 12h10M4 18h7"/></svg></div><h3>Phrases, not grammar</h3><p>Short reusable chunks like “the name on your booking”, each shown in a full sentence and a real conversation.</p></div>
+      <div class="card feat"><div class="ico box"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h10M9 4v3M6 7c1 4 4 7 8 8M13 7c-1 4-4 7-8 8M14 20l3.5-8 3.5 8M15 17.5h5"/></svg></div><h3>Read it even if you can't read it</h3><p>Japanese, Chinese, Korean, Thai and other scripts always come with English-letter transliteration and the meaning.</p></div>
+      <div class="card feat"><div class="ico box"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z"/></svg></div><h3>Practise as a chat</h3><p>The guest says something; you tap the phrase you need. Get it right and it's spoken back for you to copy.</p></div>
+      <div class="card feat"><div class="ico audio"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M3 18v-6a9 9 0 0 1 18 0v6"/><path d="M21 19a2 2 0 0 1-2 2h-1v-6h3zM3 19a2 2 0 0 0 2 2h1v-6H3z"/></svg></div><h3>Your phone's voices</h3><p>Uses the free speech engine already on your phone, with up to four voices per language. Works offline once voices are downloaded.</p></div>
+      <div class="card feat"><div class="ico box"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></div><h3>Day, dark and AMOLED</h3><p>Calm violet by day, soft indigo at night, and true black to save battery on OLED screens.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="packs">
+  <div class="wrap">
+    <h2 class="sec-title">Sample packs</h2>
+    <p class="sec-lead">Four packs come built into the app. Download them to share, edit, or use as a starting point. They're samples: have a native speaker check them before relying on them at work.</p>
+    <div class="packs">
+__PACKS__
+    </div>
+  </div>
+</section>
+
+<section id="download">
+  <div class="wrap split">
+    <div class="dl-card">
+      <h3>Download Qonverse __VERSION__</h3>
+      <p>Preview build for Android 8.0 and newer · __SIZE__</p>
+      <a class="btn" href="download/Qonverse-__VERSION__.apk" download>Download APK</a>
+      <p style="font-size:13px">SHA-256 checksum</p>
+      <code>__SHA__</code>
+    </div>
+    <div class="card">
+      <h3 style="margin-bottom:10px">Installing the APK</h3>
+      <ol class="install">
+        <li>Open the downloaded file on your Android phone.</li>
+        <li>If asked, allow your browser or file app to install unknown apps.</li>
+        <li>Open Qonverse. The four sample packs are already there.</li>
+        <li>No voice for a language? Tap the notice in the pack, or <b>Settings › Get more voices</b>, to download it free.</li>
+      </ol>
+      <p class="fine">This preview isn't on Google Play yet. All source code is on <a href="https://github.com/aadvark/Qonverse">GitHub</a> under the Apache License 2.0.</p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap row">
+    <span>Qonverse · Made by Lee Wen Yang (Mike) · Kith + Keen</span>
+    <span><a href="https://github.com/aadvark/Qonverse">GitHub</a> · <a href="https://github.com/aadvark/Qonverse/blob/main/LICENSE">Apache License 2.0</a></span>
+  </div>
+</footer>
+
+<script>
+(function(){
+  var b=document.getElementById('copy'), pre=document.getElementById('prompt');
+  if(!b||!pre) return;
+  b.addEventListener('click',function(){
+    var text=pre.textContent.split('\n---\n').slice(1).join('\n---\n')||pre.textContent;
+    var done=function(){b.textContent='Copied — now open your AI';};
+    if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(text).then(done,function(){fallback(text);done();});}
+    else{fallback(text);done();}
+  });
+  function fallback(t){var a=document.createElement('textarea');a.value=t;document.body.appendChild(a);a.select();try{document.execCommand('copy');}catch(e){}document.body.removeChild(a);}
+})();
+</script>
+</body>
+</html>

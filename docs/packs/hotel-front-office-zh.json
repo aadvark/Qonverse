@@ -1,0 +1,426 @@
+{
+  "qonverse_pack_version": "1.2",
+  "pack": {
+    "id": "hotel-front-office-zh",
+    "title": "Hotel Front Office — Mandarin",
+    "description": "Polite Mandarin (Mainland) phrases for front desk staff serving hotel guests.",
+    "industry": "Hospitality",
+    "role": "Front office agent",
+    "audience": "Hotel guests",
+    "target_language": "zh-CN",
+    "romanization_system": "Hanyu Pinyin",
+    "politeness": "polite",
+    "learner_language": "en",
+    "level": "beginner",
+    "generated_by": "Qonverse sample pack (please have a native speaker review before real use)",
+    "created": "2026-11-17"
+  },
+  "scenarios": [
+    {
+      "id": "check-in",
+      "title": "Check-in",
+      "title_target": "入住",
+      "title_romanization": "rùzhù",
+      "context": "Greeting arriving guests and finding their booking.",
+      "phrases": [
+        {
+          "id": "zh-check-in-01",
+          "text": "预订的名字",
+          "romanization": "yùdìng de míngzi",
+          "meaning": "the name on the booking",
+          "literal": "",
+          "pattern": "",
+          "variants": [],
+          "politeness": "polite",
+          "in_a_sentence": {
+            "text": "请问您预订的名字是什么？",
+            "romanization": "Qǐngwèn nín yùdìng de míngzi shì shénme?",
+            "meaning": "May I ask the name on your booking?"
+          },
+          "when_to_use": "When a guest arrives to check in and you need to find their reservation.",
+          "notes": "请问 (qǐngwèn, 'may I ask') makes a question polite.",
+          "example": {
+            "setting": "A guest walks up to the front desk with a suitcase.",
+            "dialogue": [
+              {
+                "speaker": "you",
+                "uses_phrase": true,
+                "text": "您好，欢迎光临。请问您预订的名字是什么？",
+                "romanization": "Nín hǎo, huānyíng guānglín. Qǐngwèn nín yùdìng de míngzi shì shénme?",
+                "meaning": "Hello, welcome. May I ask the name on your booking?"
+              },
+              {
+                "speaker": "guest",
+                "text": "我叫王明。",
+                "romanization": "Wǒ jiào Wáng Míng.",
+                "meaning": "My name is Wang Ming."
+              },
+              {
+                "speaker": "you",
+                "text": "好的，王先生，请稍等。",
+                "romanization": "Hǎo de, Wáng xiānsheng, qǐng shāo děng.",
+                "meaning": "Okay, Mr Wang, one moment please."
+              }
+            ]
+          },
+          "likely_responses": [
+            {
+              "text": "我没有预订。",
+              "romanization": "Wǒ méiyǒu yùdìng.",
+              "meaning": "I don't have a booking."
+            },
+            {
+              "text": "是用公司名字订的。",
+              "romanization": "Shì yòng gōngsī míngzi dìng de.",
+              "meaning": "It was booked under the company name."
+            }
+          ]
+        },
+        {
+          "id": "zh-check-in-02",
+          "text": "请稍等",
+          "romanization": "qǐng shāo děng",
+          "meaning": "one moment, please",
+          "literal": "",
+          "pattern": "",
+          "variants": [],
+          "politeness": "polite",
+          "in_a_sentence": {
+            "text": "我帮您查一下，请稍等。",
+            "romanization": "Wǒ bāng nín chá yíxià, qǐng shāo děng.",
+            "meaning": "Let me check for you, one moment please."
+          },
+          "when_to_use": "Any time you need the guest to wait briefly.",
+          "notes": "",
+          "example": {
+            "setting": "You are searching for the guest's reservation.",
+            "dialogue": [
+              {
+                "speaker": "guest",
+                "text": "我有预订，姓李。",
+                "romanization": "Wǒ yǒu yùdìng, xìng Lǐ.",
+                "meaning": "I have a booking, surname Li."
+              },
+              {
+                "speaker": "you",
+                "uses_phrase": true,
+                "text": "好的，我帮您查一下，请稍等。",
+                "romanization": "Hǎo de, wǒ bāng nín chá yíxià, qǐng shāo děng.",
+                "meaning": "Okay, let me check for you, one moment please."
+              }
+            ]
+          },
+          "likely_responses": [
+            {
+              "text": "好的。",
+              "romanization": "Hǎo de.",
+              "meaning": "Okay."
+            },
+            {
+              "text": "要多久？",
+              "romanization": "Yào duōjiǔ?",
+              "meaning": "How long will it take?"
+            }
+          ]
+        },
+        {
+          "id": "zh-check-in-03",
+          "text": "出示一下护照",
+          "romanization": "chūshì yíxià hùzhào",
+          "meaning": "show your passport",
+          "literal": "",
+          "pattern": "",
+          "variants": [],
+          "politeness": "polite",
+          "in_a_sentence": {
+            "text": "麻烦您出示一下护照。",
+            "romanization": "Máfan nín chūshì yíxià hùzhào.",
+            "meaning": "Could you please show your passport?"
+          },
+          "when_to_use": "When registering a foreign guest.",
+          "notes": "麻烦您 (máfan nín) is a polite way to ask a favour.",
+          "example": {
+            "setting": "You have found the booking and need to register the guest.",
+            "dialogue": [
+              {
+                "speaker": "you",
+                "uses_phrase": true,
+                "text": "麻烦您出示一下护照。",
+                "romanization": "Máfan nín chūshì yíxià hùzhào.",
+                "meaning": "Could you please show your passport?"
+              },
+              {
+                "speaker": "guest",
+                "text": "给你。",
+                "romanization": "Gěi nǐ.",
+                "meaning": "Here you are."
+              },
+              {
+                "speaker": "you",
+                "text": "谢谢。",
+                "romanization": "Xièxie.",
+                "meaning": "Thank you."
+              }
+            ]
+          },
+          "likely_responses": [
+            {
+              "text": "给你。",
+              "romanization": "Gěi nǐ.",
+              "meaning": "Here you are."
+            },
+            {
+              "text": "身份证可以吗？",
+              "romanization": "Shēnfènzhèng kěyǐ ma?",
+              "meaning": "Is an ID card okay?"
+            }
+          ]
+        },
+        {
+          "id": "zh-check-in-04",
+          "text": "早餐时间",
+          "romanization": "zǎocān shíjiān",
+          "meaning": "breakfast hours",
+          "literal": "",
+          "pattern": "",
+          "variants": [],
+          "politeness": "polite",
+          "in_a_sentence": {
+            "text": "早餐时间是七点到十点。",
+            "romanization": "Zǎocān shíjiān shì qī diǎn dào shí diǎn.",
+            "meaning": "Breakfast is from 7 to 10."
+          },
+          "when_to_use": "When a guest asks about breakfast.",
+          "notes": "",
+          "example": {
+            "setting": "A guest asks about breakfast while you hand over the room card.",
+            "dialogue": [
+              {
+                "speaker": "guest",
+                "text": "早餐几点开始？",
+                "romanization": "Zǎocān jǐ diǎn kāishǐ?",
+                "meaning": "What time does breakfast start?"
+              },
+              {
+                "speaker": "you",
+                "uses_phrase": true,
+                "text": "早餐时间是七点到十点，在二楼。",
+                "romanization": "Zǎocān shíjiān shì qī diǎn dào shí diǎn, zài èr lóu.",
+                "meaning": "Breakfast is from 7 to 10, on the 2nd floor."
+              }
+            ]
+          },
+          "likely_responses": [
+            {
+              "text": "包含在房费里吗？",
+              "romanization": "Bāohán zài fángfèi lǐ ma?",
+              "meaning": "Is it included in the room rate?"
+            },
+            {
+              "text": "在哪里？",
+              "romanization": "Zài nǎlǐ?",
+              "meaning": "Where is it?"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "check-out",
+      "title": "Check-out",
+      "title_target": "退房",
+      "title_romanization": "tuìfáng",
+      "context": "Settling the bill and saying goodbye.",
+      "phrases": [
+        {
+          "id": "zh-check-out-01",
+          "text": "退房",
+          "romanization": "tuìfáng",
+          "meaning": "to check out",
+          "literal": "",
+          "pattern": "",
+          "variants": [],
+          "politeness": "polite",
+          "in_a_sentence": {
+            "text": "您是要退房吗？",
+            "romanization": "Nín shì yào tuìfáng ma?",
+            "meaning": "Are you checking out?"
+          },
+          "when_to_use": "When a guest comes to the desk with luggage in the morning.",
+          "notes": "Room numbers are read digit by digit, and 1 is said yāo.",
+          "example": {
+            "setting": "A guest puts their room card on the counter.",
+            "dialogue": [
+              {
+                "speaker": "you",
+                "uses_phrase": true,
+                "text": "您好，您是要退房吗？",
+                "romanization": "Nín hǎo, nín shì yào tuìfáng ma?",
+                "meaning": "Hello, are you checking out?"
+              },
+              {
+                "speaker": "guest",
+                "text": "对，1208房。",
+                "romanization": "Duì, yāo èr líng bā fáng.",
+                "meaning": "Yes, room 1208."
+              }
+            ]
+          },
+          "likely_responses": [
+            {
+              "text": "对。",
+              "romanization": "Duì.",
+              "meaning": "Yes."
+            },
+            {
+              "text": "可以晚点退房吗？",
+              "romanization": "Kěyǐ wǎn diǎn tuìfáng ma?",
+              "meaning": "Can I check out late?"
+            }
+          ]
+        },
+        {
+          "id": "zh-check-out-02",
+          "text": "刷卡还是付现金",
+          "romanization": "shuākǎ háishi fù xiànjīn",
+          "meaning": "card or cash",
+          "literal": "",
+          "pattern": "",
+          "variants": [],
+          "politeness": "polite",
+          "in_a_sentence": {
+            "text": "请问您刷卡还是付现金？",
+            "romanization": "Qǐngwèn nín shuākǎ háishi fù xiànjīn?",
+            "meaning": "Will you pay by card or cash?"
+          },
+          "when_to_use": "After showing the bill, to ask how the guest will pay.",
+          "notes": "",
+          "example": {
+            "setting": "The guest has checked the bill.",
+            "dialogue": [
+              {
+                "speaker": "you",
+                "uses_phrase": true,
+                "text": "一共是一千二百元。请问您刷卡还是付现金？",
+                "romanization": "Yígòng shì yìqiān èrbǎi yuán. Qǐngwèn nín shuākǎ háishi fù xiànjīn?",
+                "meaning": "The total is 1,200 yuan. Card or cash?"
+              },
+              {
+                "speaker": "guest",
+                "text": "刷卡。",
+                "romanization": "Shuākǎ.",
+                "meaning": "Card."
+              }
+            ]
+          },
+          "likely_responses": [
+            {
+              "text": "刷卡。",
+              "romanization": "Shuākǎ.",
+              "meaning": "Card."
+            },
+            {
+              "text": "可以用微信支付吗？",
+              "romanization": "Kěyǐ yòng Wēixìn zhīfù ma?",
+              "meaning": "Can I use WeChat Pay?"
+            }
+          ]
+        },
+        {
+          "id": "zh-check-out-03",
+          "text": "寄存行李",
+          "romanization": "jìcún xíngli",
+          "meaning": "to store luggage",
+          "literal": "",
+          "pattern": "",
+          "variants": [],
+          "politeness": "polite",
+          "in_a_sentence": {
+            "text": "需要帮您寄存行李吗？",
+            "romanization": "Xūyào bāng nín jìcún xíngli ma?",
+            "meaning": "Would you like us to store your luggage?"
+          },
+          "when_to_use": "When a checked-out guest still has time before leaving.",
+          "notes": "",
+          "example": {
+            "setting": "The guest says their flight is in the evening.",
+            "dialogue": [
+              {
+                "speaker": "guest",
+                "text": "我的航班是晚上的。",
+                "romanization": "Wǒ de hángbān shì wǎnshang de.",
+                "meaning": "My flight is in the evening."
+              },
+              {
+                "speaker": "you",
+                "uses_phrase": true,
+                "text": "需要帮您寄存行李吗？",
+                "romanization": "Xūyào bāng nín jìcún xíngli ma?",
+                "meaning": "Would you like us to store your luggage?"
+              }
+            ]
+          },
+          "likely_responses": [
+            {
+              "text": "好的，谢谢。",
+              "romanization": "Hǎo de, xièxie.",
+              "meaning": "Yes, thank you."
+            },
+            {
+              "text": "可以放到几点？",
+              "romanization": "Kěyǐ fàng dào jǐ diǎn?",
+              "meaning": "Until what time can I leave it?"
+            }
+          ]
+        },
+        {
+          "id": "zh-check-out-04",
+          "text": "欢迎再次光临",
+          "romanization": "huānyíng zàicì guānglín",
+          "meaning": "please come again",
+          "literal": "",
+          "pattern": "",
+          "variants": [],
+          "politeness": "polite",
+          "in_a_sentence": {
+            "text": "谢谢您的入住，欢迎再次光临！",
+            "romanization": "Xièxie nín de rùzhù, huānyíng zàicì guānglín!",
+            "meaning": "Thank you for staying with us, please come again!"
+          },
+          "when_to_use": "The standard farewell as the guest leaves.",
+          "notes": "",
+          "example": {
+            "setting": "Check-out is complete.",
+            "dialogue": [
+              {
+                "speaker": "guest",
+                "text": "谢谢，再见。",
+                "romanization": "Xièxie, zàijiàn.",
+                "meaning": "Thanks, goodbye."
+              },
+              {
+                "speaker": "you",
+                "uses_phrase": true,
+                "text": "谢谢您的入住，欢迎再次光临！",
+                "romanization": "Xièxie nín de rùzhù, huānyíng zàicì guānglín!",
+                "meaning": "Thank you for staying with us, please come again!"
+              }
+            ]
+          },
+          "likely_responses": [
+            {
+              "text": "一定会的。",
+              "romanization": "Yídìng huì de.",
+              "meaning": "I definitely will."
+            },
+            {
+              "text": "再见。",
+              "romanization": "Zàijiàn.",
+              "meaning": "Goodbye."
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,426 @@
+{
+  "qonverse_pack_version": "1.2",
+  "pack": {
+    "id": "hotel-front-office-ja",
+    "title": "Hotel Front Office — Japanese",
+    "description": "Very polite Japanese phrases for front desk staff serving hotel guests.",
+    "industry": "Hospitality",
+    "role": "Front office agent",
+    "audience": "Hotel guests",
+    "target_language": "ja-JP",
+    "romanization_system": "Hepburn",
+    "politeness": "very formal",
+    "learner_language": "en",
+    "level": "beginner",
+    "generated_by": "Qonverse sample pack (please have a native speaker review before real use)",
+    "created": "2026-11-17"
+  },
+  "scenarios": [
+    {
+      "id": "check-in",
+      "title": "Check-in",
+      "title_target": "チェックイン",
+      "title_romanization": "chekku-in",
+      "context": "Greeting arriving guests and finding their booking.",
+      "phrases": [
+        {
+          "id": "ja-check-in-01",
+          "text": "ご予約のお名前",
+          "romanization": "go-yoyaku no o-namae",
+          "meaning": "the name on your booking",
+          "literal": "(honorific) booking's (honorific) name",
+          "pattern": "",
+          "variants": [],
+          "politeness": "very formal",
+          "in_a_sentence": {
+            "text": "ご予約のお名前をお願いいたします。",
+            "romanization": "Go-yoyaku no o-namae o onegai itashimasu.",
+            "meaning": "May I have the name on your booking, please?"
+          },
+          "when_to_use": "When a guest arrives to check in and you need to find their reservation.",
+          "notes": "The extra ご and お make it very polite.",
+          "example": {
+            "setting": "A guest walks up to the front desk with their luggage.",
+            "dialogue": [
+              {
+                "speaker": "you",
+                "uses_phrase": true,
+                "text": "いらっしゃいませ。ご予約のお名前をお願いいたします。",
+                "romanization": "Irasshaimase. Go-yoyaku no o-namae o onegai itashimasu.",
+                "meaning": "Welcome. May I have the name on your booking?"
+              },
+              {
+                "speaker": "guest",
+                "text": "田中です。",
+                "romanization": "Tanaka desu.",
+                "meaning": "It's Tanaka."
+              },
+              {
+                "speaker": "you",
+                "text": "田中様ですね。少々お待ちくださいませ。",
+                "romanization": "Tanaka-sama desu ne. Shōshō omachi kudasaimase.",
+                "meaning": "Mr/Ms Tanaka. One moment, please."
+              }
+            ]
+          },
+          "likely_responses": [
+            {
+              "text": "予約はしていません。",
+              "romanization": "Yoyaku wa shite imasen.",
+              "meaning": "I don't have a booking."
+            },
+            {
+              "text": "会社の名前で予約しました。",
+              "romanization": "Kaisha no namae de yoyaku shimashita.",
+              "meaning": "I booked under my company's name."
+            }
+          ]
+        },
+        {
+          "id": "ja-check-in-02",
+          "text": "少々お待ちください",
+          "romanization": "shōshō omachi kudasai",
+          "meaning": "one moment, please",
+          "literal": "",
+          "pattern": "",
+          "variants": [],
+          "politeness": "very formal",
+          "in_a_sentence": {
+            "text": "ただいまお調べしますので、少々お待ちください。",
+            "romanization": "Tadaima o-shirabe shimasu node, shōshō omachi kudasai.",
+            "meaning": "I'll check right now, so one moment, please."
+          },
+          "when_to_use": "Any time you need the guest to wait briefly, such as while you look up their booking.",
+          "notes": "For extra politeness say 少々お待ちくださいませ (shōshō omachi kudasaimase).",
+          "example": {
+            "setting": "You are searching the system for a guest's reservation.",
+            "dialogue": [
+              {
+                "speaker": "guest",
+                "text": "予約した山本です。",
+                "romanization": "Yoyaku shita Yamamoto desu.",
+                "meaning": "I'm Yamamoto, I have a booking."
+              },
+              {
+                "speaker": "you",
+                "uses_phrase": true,
+                "text": "ありがとうございます。少々お待ちください。",
+                "romanization": "Arigatō gozaimasu. Shōshō omachi kudasai.",
+                "meaning": "Thank you. One moment, please."
+              }
+            ]
+          },
+          "likely_responses": [
+            {
+              "text": "はい。",
+              "romanization": "Hai.",
+              "meaning": "Okay."
+            },
+            {
+              "text": "急いでいます。",
+              "romanization": "Isoide imasu.",
+              "meaning": "I'm in a hurry."
+            }
+          ]
+        },
+        {
+          "id": "ja-check-in-03",
+          "text": "パスポートを拝見",
+          "romanization": "pasupōto o haiken",
+          "meaning": "to see your passport (humble)",
+          "literal": "",
+          "pattern": "",
+          "variants": [],
+          "politeness": "very formal",
+          "in_a_sentence": {
+            "text": "パスポートを拝見してもよろしいでしょうか。",
+            "romanization": "Pasupōto o haiken shite mo yoroshii deshō ka.",
+            "meaning": "May I see your passport?"
+          },
+          "when_to_use": "When registering a foreign guest, who must show their passport.",
+          "notes": "拝見 (haiken) is the humble word for 'see'. Take the passport with both hands.",
+          "example": {
+            "setting": "You have found the booking and need to register the guest.",
+            "dialogue": [
+              {
+                "speaker": "you",
+                "uses_phrase": true,
+                "text": "パスポートを拝見してもよろしいでしょうか。",
+                "romanization": "Pasupōto o haiken shite mo yoroshii deshō ka.",
+                "meaning": "May I see your passport?"
+              },
+              {
+                "speaker": "guest",
+                "text": "はい、どうぞ。",
+                "romanization": "Hai, dōzo.",
+                "meaning": "Yes, here you are."
+              },
+              {
+                "speaker": "you",
+                "text": "ありがとうございます。",
+                "romanization": "Arigatō gozaimasu.",
+                "meaning": "Thank you."
+              }
+            ]
+          },
+          "likely_responses": [
+            {
+              "text": "はい、どうぞ。",
+              "romanization": "Hai, dōzo.",
+              "meaning": "Yes, here you are."
+            },
+            {
+              "text": "部屋に置いてきました。",
+              "romanization": "Heya ni oite kimashita.",
+              "meaning": "I left it in my room."
+            }
+          ]
+        },
+        {
+          "id": "ja-check-in-04",
+          "text": "朝食会場",
+          "romanization": "chōshoku kaijō",
+          "meaning": "the breakfast room",
+          "literal": "",
+          "pattern": "{number}階 ({number}-kai) = floor {number}",
+          "variants": [],
+          "politeness": "very formal",
+          "in_a_sentence": {
+            "text": "朝食会場は2階でございます。",
+            "romanization": "Chōshoku kaijō wa ni-kai de gozaimasu.",
+            "meaning": "The breakfast room is on the 2nd floor."
+          },
+          "when_to_use": "When a guest asks where breakfast is served.",
+          "notes": "",
+          "example": {
+            "setting": "A guest asks about breakfast while you hand over the key card.",
+            "dialogue": [
+              {
+                "speaker": "guest",
+                "text": "朝ごはんはどこですか。",
+                "romanization": "Asagohan wa doko desu ka.",
+                "meaning": "Where is breakfast?"
+              },
+              {
+                "speaker": "you",
+                "uses_phrase": true,
+                "text": "朝食会場は2階でございます。7時から10時までです。",
+                "romanization": "Chōshoku kaijō wa ni-kai de gozaimasu. Shichi-ji kara jū-ji made desu.",
+                "meaning": "The breakfast room is on the 2nd floor. It's from 7 to 10."
+              }
+            ]
+          },
+          "likely_responses": [
+            {
+              "text": "何時からですか。",
+              "romanization": "Nanji kara desu ka.",
+              "meaning": "From what time?"
+            },
+            {
+              "text": "料金に含まれていますか。",
+              "romanization": "Ryōkin ni fukumarete imasu ka.",
+              "meaning": "Is it included in the rate?"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "check-out",
+      "title": "Check-out",
+      "title_target": "チェックアウト",
+      "title_romanization": "chekku-auto",
+      "context": "Settling the bill and saying goodbye.",
+      "phrases": [
+        {
+          "id": "ja-check-out-01",
+          "text": "お会計",
+          "romanization": "o-kaikei",
+          "meaning": "the bill",
+          "literal": "",
+          "pattern": "",
+          "variants": [],
+          "politeness": "very formal",
+          "in_a_sentence": {
+            "text": "こちらがお会計でございます。",
+            "romanization": "Kochira ga o-kaikei de gozaimasu.",
+            "meaning": "Here is your bill."
+          },
+          "when_to_use": "When you hand the guest their bill at check-out.",
+          "notes": "",
+          "example": {
+            "setting": "A guest returns the key card and wants to check out.",
+            "dialogue": [
+              {
+                "speaker": "guest",
+                "text": "チェックアウトをお願いします。",
+                "romanization": "Chekku-auto o onegai shimasu.",
+                "meaning": "I'd like to check out, please."
+              },
+              {
+                "speaker": "you",
+                "uses_phrase": true,
+                "text": "かしこまりました。こちらがお会計でございます。",
+                "romanization": "Kashikomarimashita. Kochira ga o-kaikei de gozaimasu.",
+                "meaning": "Certainly. Here is your bill."
+              }
+            ]
+          },
+          "likely_responses": [
+            {
+              "text": "カードで払えますか。",
+              "romanization": "Kādo de haraemasu ka.",
+              "meaning": "Can I pay by card?"
+            },
+            {
+              "text": "これは何の料金ですか。",
+              "romanization": "Kore wa nan no ryōkin desu ka.",
+              "meaning": "What is this charge for?"
+            }
+          ]
+        },
+        {
+          "id": "ja-check-out-02",
+          "text": "お支払い方法",
+          "romanization": "o-shiharai hōhō",
+          "meaning": "payment method",
+          "literal": "",
+          "pattern": "",
+          "variants": [],
+          "politeness": "very formal",
+          "in_a_sentence": {
+            "text": "お支払い方法はいかがなさいますか。",
+            "romanization": "O-shiharai hōhō wa ikaga nasaimasu ka.",
+            "meaning": "How would you like to pay?"
+          },
+          "when_to_use": "After showing the bill, to ask how the guest will pay.",
+          "notes": "",
+          "example": {
+            "setting": "The guest has checked the bill and nods.",
+            "dialogue": [
+              {
+                "speaker": "you",
+                "uses_phrase": true,
+                "text": "お支払い方法はいかがなさいますか。",
+                "romanization": "O-shiharai hōhō wa ikaga nasaimasu ka.",
+                "meaning": "How would you like to pay?"
+              },
+              {
+                "speaker": "guest",
+                "text": "カードでお願いします。",
+                "romanization": "Kādo de onegai shimasu.",
+                "meaning": "By card, please."
+              }
+            ]
+          },
+          "likely_responses": [
+            {
+              "text": "カードでお願いします。",
+              "romanization": "Kādo de onegai shimasu.",
+              "meaning": "By card, please."
+            },
+            {
+              "text": "現金で払います。",
+              "romanization": "Genkin de haraimasu.",
+              "meaning": "I'll pay in cash."
+            }
+          ]
+        },
+        {
+          "id": "ja-check-out-03",
+          "text": "お荷物をお預かり",
+          "romanization": "o-nimotsu o o-azukari",
+          "meaning": "keeping your luggage for you",
+          "literal": "",
+          "pattern": "",
+          "variants": [],
+          "politeness": "very formal",
+          "in_a_sentence": {
+            "text": "お荷物をお預かりいたしましょうか。",
+            "romanization": "O-nimotsu o o-azukari itashimashō ka.",
+            "meaning": "Shall we keep your luggage for you?"
+          },
+          "when_to_use": "When a checked-out guest still has time before leaving the city.",
+          "notes": "",
+          "example": {
+            "setting": "The guest mentions they will go sightseeing before their flight.",
+            "dialogue": [
+              {
+                "speaker": "guest",
+                "text": "夕方まで観光します。",
+                "romanization": "Yūgata made kankō shimasu.",
+                "meaning": "I'll go sightseeing until the evening."
+              },
+              {
+                "speaker": "you",
+                "uses_phrase": true,
+                "text": "お荷物をお預かりいたしましょうか。",
+                "romanization": "O-nimotsu o o-azukari itashimashō ka.",
+                "meaning": "Shall we keep your luggage for you?"
+              }
+            ]
+          },
+          "likely_responses": [
+            {
+              "text": "お願いします。",
+              "romanization": "Onegai shimasu.",
+              "meaning": "Yes, please."
+            },
+            {
+              "text": "何時まで預けられますか。",
+              "romanization": "Nanji made azukeraremasu ka.",
+              "meaning": "Until what time can I leave it?"
+            }
+          ]
+        },
+        {
+          "id": "ja-check-out-04",
+          "text": "またのお越しをお待ちしております",
+          "romanization": "mata no okoshi o omachi shite orimasu",
+          "meaning": "we look forward to your next visit",
+          "literal": "",
+          "pattern": "",
+          "variants": [],
+          "politeness": "very formal",
+          "in_a_sentence": {
+            "text": "ご利用ありがとうございました。またのお越しをお待ちしております。",
+            "romanization": "Go-riyō arigatō gozaimashita. Mata no okoshi o omachi shite orimasu.",
+            "meaning": "Thank you for staying with us. We look forward to your next visit."
+          },
+          "when_to_use": "The standard farewell as the guest leaves the desk.",
+          "notes": "A fixed farewell expression, said with a bow.",
+          "example": {
+            "setting": "Check-out is complete and the guest picks up their bag.",
+            "dialogue": [
+              {
+                "speaker": "guest",
+                "text": "お世話になりました。",
+                "romanization": "O-sewa ni narimashita.",
+                "meaning": "Thank you for everything."
+              },
+              {
+                "speaker": "you",
+                "uses_phrase": true,
+                "text": "ご利用ありがとうございました。またのお越しをお待ちしております。",
+                "romanization": "Go-riyō arigatō gozaimashita. Mata no okoshi o omachi shite orimasu.",
+                "meaning": "Thank you for staying with us. We look forward to your next visit."
+              }
+            ]
+          },
+          "likely_responses": [
+            {
+              "text": "また来ます。",
+              "romanization": "Mata kimasu.",
+              "meaning": "I'll come again."
+            },
+            {
+              "text": "ありがとうございました。",
+              "romanization": "Arigatō gozaimashita.",
+              "meaning": "Thank you."
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
