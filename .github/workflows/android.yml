@@ -22,9 +22,10 @@ jobs:
           pip install jsonschema
           python3 -c "import json,glob,jsonschema; s=json.load(open('schema/pack.schema.json')); [jsonschema.validate(json.load(open(f)), s) for f in glob.glob('packs/*.json')]; print('packs ok')"
       # GitHub's Ubuntu runners already include the Android SDK (ANDROID_HOME is set).
-      - name: Build release APK
-        run: ./gradlew assembleRelease --no-daemon
+      # This is a compile check: published APKs are signed locally with the preview key, which CI doesn't have.
+      - name: Build APK
+        run: ./gradlew assembleDebug --no-daemon
       - uses: actions/upload-artifact@v4
         with:
           name: Qonverse-apk
-          path: app/build/outputs/apk/release/app-release.apk
+          path: app/build/outputs/apk/debug/app-debug.apk
