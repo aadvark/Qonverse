@@ -42,6 +42,9 @@ import com.kithandkeen.qonverse.ui.PracticeScreen
 import com.kithandkeen.qonverse.ui.Q
 import com.kithandkeen.qonverse.ui.QonverseTheme
 import com.kithandkeen.qonverse.ui.SettingsScreen
+import com.kithandkeen.qonverse.ui.SearchScreen
+import com.kithandkeen.qonverse.ui.ShadowScreen
+import com.kithandkeen.qonverse.ui.StarredScreen
 
 /** App-wide state: packs, progress version, theme, and the speech engine. */
 class AppState(val store: Store, val speaker: Speaker) {
@@ -49,6 +52,11 @@ class AppState(val store: Store, val speaker: Speaker) {
         private set
     var theme by mutableStateOf(store.themeMode)
         private set
+    /** Normal playback speed, changeable from the speed chip on learning and practice screens. */
+    var speed by mutableFloatStateOf(store.normalRate)
+        private set
+    fun changeSpeed(v: Float) { store.normalRate = v; speed = v }
+
     /** A newer preview version found by the update check, if any. */
     var update by mutableStateOf<UpdateInfo?>(null)
     var updateDismissed by mutableStateOf(false)
@@ -64,7 +72,7 @@ class AppState(val store: Store, val speaker: Speaker) {
     fun familiar(packId: String): Set<String> { progressTick; return store.familiar(packId) }
     fun voiceFor(lang: String) = store.voiceFor(lang)
     fun say(text: String, lang: String, slow: Boolean = false, times: Int = 1) =
-        speaker.speak(text, lang, if (slow) store.slowRate else store.normalRate, times, store.voiceFor(lang))
+        speaker.speak(text, lang, if (slow) store.slowRate else speed, times, store.voiceFor(lang))
 }
 
 val LocalApp = staticCompositionLocalOf<AppState> { error("AppState not provided") }
@@ -77,6 +85,8 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         val store = Store(this).apply { seedSamples() }
         app = AppState(store, Speaker(this))
+        // keep the daily reminder scheduled and the widget fresh
+        runCatching { ReminderWorker.schedule(this, store.reminderHour); PhraseWidget.refresh(this) }
         setContent {
             CompositionLocalProvider(LocalApp provides app) {
                 QonverseTheme(app.theme) { AppNav() }
@@ -101,6 +111,8 @@ private fun AppNav() {
         NavHost(nav, startDestination = "home") {
             composable("home") {
                 HomeScreen(
+                    openStarred = { nav.navigate("starred") },
+                    openSearch = { nav.navigate("search") },
                     openPack = { nav.navigate("pack/$it") },
                     openPhrase = { p, s, i -> nav.navigate("phrase/$p/$s/$i") },
                     addPack = { nav.navigate("add") },
@@ -119,6 +131,7 @@ private fun AppNav() {
                     id, back = { nav.popBackStack() },
                     openScenario = { s -> nav.navigate("phrase/$id/$s/0") },
                     practice = { nav.navigate("practice/$id") },
+                    shadow = { nav.navigate("shadow/$id") },
                     deleted = { nav.popBackStack() },
                 )
             }
@@ -132,6 +145,9 @@ private fun AppNav() {
                 PracticeScreen(e.arguments?.getString("p") ?: "all", close = { nav.popBackStack() })
             }
             composable("settings") { SettingsScreen(back = { nav.popBackStack() }) }
+            composable("starred") { StarredScreen(back = { nav.popBackStack() }) { r -> nav.navigate("phrase/${r.pack.pack.id}/${r.scenarioId}/${r.index}") } }
+            composable("search") { SearchScreen(back = { nav.popBackStack() }) { r -> nav.navigate("phrase/${r.pack.pack.id}/${r.scenarioId}/${r.index}") } }
+            composable("shadow/{p}") { e -> ShadowScreen(e.arguments?.getString("p") ?: "", close = { nav.popBackStack() }) }
         }
     }
 }

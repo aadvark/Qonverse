@@ -1,5 +1,5 @@
 /* Qonverse web app service worker: works offline, and always fetches the newest version when online. */
-var CACHE = 'qonverse-0.2.0';
+var CACHE = 'qonverse-0.3.0';
 var SHELL = ['./', 'index.html', 'app.css', 'app.js', 'manifest.webmanifest', 'icons/icon-192.png', 'icons/icon-512.png',
   '../packs/index.json', '../prompt.md'];
 

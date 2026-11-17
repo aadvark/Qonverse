@@ -19,8 +19,29 @@ class Speaker(context: Context) : TextToSpeech.OnInitListener {
     var ready by mutableStateOf(false)
         private set
 
+    private val waiting = java.util.concurrent.ConcurrentHashMap<String, kotlinx.coroutines.CompletableDeferred<Unit>>()
+
     override fun onInit(status: Int) {
         ready = status == TextToSpeech.SUCCESS
+        tts.setOnUtteranceProgressListener(object : android.speech.tts.UtteranceProgressListener() {
+            override fun onStart(id: String?) {}
+            override fun onDone(id: String?) { id?.let { waiting.remove(it)?.complete(Unit) } }
+            @Deprecated("Deprecated in Java") override fun onError(id: String?) { id?.let { waiting.remove(it)?.complete(Unit) } }
+            override fun onStop(id: String?, interrupted: Boolean) { id?.let { waiting.remove(it)?.complete(Unit) } }
+        })
+    }
+
+    /** Speaks and suspends until the phrase has finished (used by hands-free shadow mode). */
+    suspend fun speakAndWait(text: String, lang: String, rate: Float, voiceName: String?) {
+        if (!ready || text.isBlank()) return
+        val id = "w" + System.nanoTime()
+        val done = kotlinx.coroutines.CompletableDeferred<Unit>()
+        waiting[id] = done
+        val voice = voiceName?.let { n -> runCatching { tts.voices }.getOrNull()?.firstOrNull { it.name == n } }
+        if (voice != null) tts.voice = voice else tts.language = Locale.forLanguageTag(lang)
+        tts.setSpeechRate(rate)
+        tts.speak(text, TextToSpeech.QUEUE_FLUSH, null, id)
+        kotlinx.coroutines.withTimeoutOrNull(20_000) { done.await() }
     }
 
     /** True if this phone can speak the language now (voice data installed). */

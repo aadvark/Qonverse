@@ -34,7 +34,14 @@ Qonverse itself runs no AI and needs no account or API key.
 - **Phrases, not sentences** — reusable chunks such as ご予約のお名前 *(go-yoyaku no o-namae, "the name on your booking")*, each shown in a full sentence and a real conversation.
 - **Transliteration and meaning, always** — every line in a non-Latin script comes with English letters and its meaning.
 - **Listen and imitate** — normal, slow (0.6×) and loop ×3 playback for every phrase, sentence and reply.
-- **Chat-style review** — the guest speaks; you tap the phrase you need.
+- **Chat-style review with spaced repetition** — the guest speaks; you tap the phrase you need. Missed phrases come back sooner, known ones later.
+- **Show guest** — flip a phrase into large print to show across the counter.
+- **Starred phrases and search** across all packs, in English or the other language.
+- **Pronunciation check** with the device's speech recognition.
+- **Hands-free shadow mode** — plays each phrase, pauses for you to repeat, moves on.
+- **Speed button** on every learning screen (0.6×–1.2×).
+- **Backup & restore** in one file that moves between Android and the web app ([format](docs/backup-format.md)).
+- **Daily reminder and a phrase-of-the-day widget** (Android).
 - **Phone voices** — uses the phone's own free text-to-speech engine, with up to four voices per language. Nothing is bundled or recorded.
 - **Day, dark and AMOLED themes**, offline use, and packs you can share as files.
 - **Updates itself** — the Android app checks `docs/version.json` each time it opens and offers the new APK; the web app always loads the latest version when online.

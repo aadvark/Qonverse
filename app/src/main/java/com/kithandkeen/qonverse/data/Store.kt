@@ -5,6 +5,10 @@ import kotlinx.serialization.json.Json
 import java.io.File
 
 /** Saves packs as JSON files on the phone, and keeps progress and settings in SharedPreferences. */
+private const val DAY = 24L * 60 * 60 * 1000
+/** Days until the next review for each box. */
+val INTERVALS = listOf(0, 1, 2, 4, 7, 15, 30, 60)
+
 class Store(private val context: Context) {
 
     private val json = Json { ignoreUnknownKeys = true; isLenient = true; prettyPrint = true; explicitNulls = false }
@@ -31,6 +35,7 @@ class Store(private val context: Context) {
     fun parse(raw: String): Result<PackFile> = runCatching {
         val start = raw.indexOf('{')
         val end = raw.lastIndexOf('}')
+        require(!BackupCodec.looksLikeBackup(raw)) { "This is a Qonverse backup, not a pack. Restore it from Settings › Backup & restore." }
         require(start >= 0 && end > start) { "No pack found. Paste the whole code block your AI gave you." }
         val pack = json.decodeFromString(PackFile.serializer(), raw.substring(start, end + 1))
         val problems = check(pack)
@@ -63,6 +68,8 @@ class Store(private val context: Context) {
             }
         } else incoming
         file.writeText(json.encodeToString(PackFile.serializer(), merged))
+        prefs.edit().putStringSet("hidden", hidden() - merged.pack.id).apply()
+        markChanged()
         return merged
     }
 
@@ -70,8 +77,16 @@ class Store(private val context: Context) {
 
     fun delete(id: String) {
         File(dir, safeName(id) + ".json").delete()
-        prefs.edit().remove("fam:$id").apply()
+        val ed = prefs.edit().remove("fam:$id")
+        if (id in sampleIds()) ed.putStringSet("hidden", hidden() + id)
+        ed.apply()
+        markChanged()
     }
+
+    private fun sampleIds(): Set<String> =
+        context.assets.list("packs")?.map { it.removeSuffix(".json") }?.toSet() ?: emptySet()
+
+    private fun hidden(): Set<String> = prefs.getStringSet("hidden", emptySet()) ?: emptySet()
 
     private fun safeName(id: String) = id.lowercase().replace(Regex("[^a-z0-9-]"), "-").take(80).ifBlank { "pack" }
 
@@ -82,6 +97,108 @@ class Store(private val context: Context) {
         val s = familiar(packId).toMutableSet()
         if (on) s += phraseId else s -= phraseId
         prefs.edit().putStringSet("fam:$packId", s).apply()
+        markChanged()
+    }
+
+    // ---- starred phrases ----
+    fun starred(): Set<String> = prefs.getStringSet("star", emptySet()) ?: emptySet()
+    fun isStarred(packId: String, phraseId: String) = "$packId|$phraseId" in starred()
+    fun setStarred(packId: String, phraseId: String, on: Boolean) {
+        val key = "$packId|$phraseId"
+        prefs.edit().putStringSet("star", if (on) starred() + key else starred() - key).apply()
+        markChanged()
+    }
+
+    // ---- spaced repetition (Leitner boxes) ----
+    /** phraseId -> (box, due epoch day). Box 0 = needs practice today. */
+    fun srs(packId: String): Map<String, Pair<Int, Long>> =
+        (prefs.getString("srs:$packId", null) ?: "").split(";").mapNotNull { e ->
+            val p = e.split(","); if (p.size == 3) p[0] to (p[1].toInt() to p[2].toLong()) else null
+        }.toMap()
+
+    private fun saveSrs(packId: String, m: Map<String, Pair<Int, Long>>) =
+        prefs.edit().putString("srs:$packId", m.entries.joinToString(";") { "${it.key},${it.value.first},${it.value.second}" }).apply()
+
+    /** Records an answer: right moves the phrase up a box (seen again later), wrong sends it back to box 0. */
+    fun recordAnswer(packId: String, phraseId: String, correct: Boolean) {
+        val m = srs(packId).toMutableMap()
+        val box = m[phraseId]?.first ?: 0
+        val nb = if (correct) (box + 1).coerceAtMost(INTERVALS.size - 1) else 0
+        m[phraseId] = nb to (today() + INTERVALS[nb])
+        saveSrs(packId, m)
+        setFamiliar(packId, phraseId, correct)
+    }
+
+    /** "Familiar" on the phrase card: schedule it for tomorrow if it was new or due. */
+    fun markSeen(packId: String, phraseId: String, familiar: Boolean) {
+        val m = srs(packId).toMutableMap()
+        val cur = m[phraseId]
+        m[phraseId] = if (familiar) maxOf(cur?.first ?: 0, 1) to maxOf(cur?.second ?: 0, today() + 1) else 0 to today()
+        saveSrs(packId, m)
+        setFamiliar(packId, phraseId, familiar)
+    }
+
+    fun today(): Long = java.time.LocalDate.now().toEpochDay()
+
+    // ---- backup & restore ----
+    fun exportBackup(): String {
+        val packs = loadAll()
+        val fam = prefs.all.keys.filter { it.startsWith("fam:") }
+            .associate { it.removePrefix("fam:") to familiar(it.removePrefix("fam:")).sorted() }
+            .filterValues { it.isNotEmpty() }
+        val voices = prefs.all.filterKeys { it.startsWith("voice:") }.map { (k, v) -> k.removePrefix("voice:") to v.toString() }.toMap()
+        val b = BackupFile(
+            created = java.time.OffsetDateTime.now().withNano(0).toString(), app = "android",
+            packs = packs, hidden = hidden().sorted(), familiar = fam,
+            starred = starred().sorted(),
+            srs = packs.associate { p -> p.pack.id to srs(p.pack.id).mapValues { listOf(it.value.first.toLong(), it.value.second) } }.filterValues { it.isNotEmpty() },
+            settings = BackupSettings(themeMode, normalRate, slowRate, voices),
+        )
+        return BackupCodec.encode(b)
+    }
+
+    /** Merges a backup into what's on this phone: packs are added or updated, progress is combined, settings are applied. */
+    fun restoreBackup(raw: String): RestoreResult {
+        val b = BackupCodec.decode(raw)
+        b.packs.forEach { save(it) }
+        b.hidden.filter { h -> b.packs.none { it.pack.id == h } }.forEach { if (exists(it)) delete(it) }
+        var n = 0
+        b.familiar.forEach { (packId, ids) ->
+            val merged = familiar(packId) + ids
+            n += ids.size
+            prefs.edit().putStringSet("fam:$packId", merged).apply()
+        }
+        prefs.edit().putStringSet("star", starred() + b.starred).apply()
+        b.srs.forEach { (packId, entries) ->
+            val m = srs(packId).toMutableMap()
+            entries.forEach { (id, v) -> if (v.size == 2 && v[0].toInt() >= (m[id]?.first ?: -1)) m[id] = v[0].toInt() to v[1] }
+            saveSrs(packId, m)
+        }
+        b.settings.theme?.let { themeMode = it }
+        b.settings.normalRate?.let { normalRate = it.coerceIn(0.5f, 1.5f) }
+        b.settings.slowRate?.let { slowRate = it.coerceIn(0.3f, 1f) }
+        b.settings.voices.forEach { (lang, name) -> setVoiceFor(lang, name) }
+        prefs.edit().putBoolean("unsaved_changes", false).apply()
+        return RestoreResult(b.packs.size, n)
+    }
+
+    private fun markChanged() {
+        if (!prefs.getBoolean("unsaved_changes", false))
+            prefs.edit().putBoolean("unsaved_changes", true).putLong("first_unsaved_at", System.currentTimeMillis()).apply()
+    }
+
+    fun markBackedUp() = prefs.edit().putBoolean("unsaved_changes", false).putLong("last_backup_at", System.currentTimeMillis()).apply()
+
+    val lastBackupAt: Long get() = prefs.getLong("last_backup_at", 0L)
+
+    fun snoozeBackupReminder() = prefs.edit().putLong("backup_snooze_until", System.currentTimeMillis() + 7 * DAY).apply()
+
+    /** Remind after a week of changes that haven't been backed up. */
+    fun shouldRemindBackup(): Boolean {
+        val now = System.currentTimeMillis()
+        return prefs.getBoolean("unsaved_changes", false) &&
+            now - prefs.getLong("first_unsaved_at", now) > 7 * DAY &&
+            now > prefs.getLong("backup_snooze_until", 0L)
     }
 
     // ---- settings ----
@@ -96,6 +213,14 @@ class Store(private val context: Context) {
     var slowRate: Float
         get() = prefs.getFloat("rate_slow", 0.6f)
         set(v) = prefs.edit().putFloat("rate_slow", v).apply()
+
+    var reminderOn: Boolean
+        get() = prefs.getBoolean("reminder_on", false)
+        set(v) = prefs.edit().putBoolean("reminder_on", v).apply()
+
+    var reminderHour: Int
+        get() = prefs.getInt("reminder_hour", 9)
+        set(v) = prefs.edit().putInt("reminder_hour", v).apply()
 
     var autoUpdate: Boolean
         get() = prefs.getBoolean("auto_update", true)

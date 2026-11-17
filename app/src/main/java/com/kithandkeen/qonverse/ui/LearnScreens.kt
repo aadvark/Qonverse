@@ -70,7 +70,10 @@ fun PhraseScreen(packId: String, scenarioId: String, start: Int, close: () -> Un
     val fam = app.familiar(packId)
 
     Column(Modifier.fillMaxSize().background(c.bg)) {
-        TopBar(scen.title, close) { Text("${pager.currentPage + 1} of ${scen.phrases.size}", color = c.muted, fontSize = 14.sp, modifier = Modifier.padding(end = 8.dp)) }
+        TopBar(scen.title, close) {
+            SpeedChip()
+            Text("${pager.currentPage + 1}/${scen.phrases.size}", color = c.muted, fontSize = 14.sp, modifier = Modifier.padding(start = 4.dp, end = 8.dp))
+        }
         Row(Modifier.fillMaxWidth().padding(horizontal = 16.dp), horizontalArrangement = Arrangement.spacedBy(4.dp)) {
             scen.phrases.forEachIndexed { i, ph ->
                 Box(
@@ -86,11 +89,11 @@ fun PhraseScreen(packId: String, scenarioId: String, start: Int, close: () -> Un
         Row(Modifier.fillMaxWidth().padding(16.dp), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
             val ph = scen.phrases[pager.currentPage]
             SecondaryButton("Again later", Modifier.weight(1f), color = c.ink) {
-                app.setFamiliar(packId, ph.id, false)
+                app.store.markSeen(packId, ph.id, false); app.progressTick++
                 scope.launch { if (pager.currentPage < scen.phrases.size - 1) pager.animateScrollToPage(pager.currentPage + 1) }
             }
             PrimaryButton(if (ph.id in fam) "✓ Familiar" else "Familiar", Modifier.weight(1f)) {
-                app.setFamiliar(packId, ph.id, true)
+                app.store.markSeen(packId, ph.id, true); app.progressTick++
                 scope.launch { if (pager.currentPage < scen.phrases.size - 1) pager.animateScrollToPage(pager.currentPage + 1) }
             }
         }
@@ -112,7 +115,21 @@ private fun PhraseCard(pack: PackFile, ph: Phrase, lang: String) {
                 Modifier.fillMaxWidth().clip(RoundedCornerShape(22.dp)).background(c.surface).border(1.dp, c.line, RoundedCornerShape(22.dp)).padding(20.dp),
                 verticalArrangement = Arrangement.spacedBy(10.dp),
             ) {
-                if (ph.politeness.isNotBlank()) Chip(ph.politeness.replaceFirstChar { it.uppercase() } + " · Phrase", c.boxSoft, c.boxText)
+                var guest by remember(ph.id) { mutableStateOf(false) }
+                val starred = remember(ph.id, app.progressTick) { app.store.isStarred(pack.pack.id, ph.id) }
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Box(Modifier.weight(1f)) { if (ph.politeness.isNotBlank()) Chip(ph.politeness.replaceFirstChar { it.uppercase() } + " · Phrase", c.boxSoft, c.boxText) }
+                    Text(
+                        "Show guest", color = c.boxText, fontWeight = FontWeight.SemiBold, fontSize = 14.sp,
+                        modifier = Modifier.clip(RoundedCornerShape(10.dp)).clickable(role = Role.Button) { guest = true }.padding(horizontal = 10.dp, vertical = 10.dp),
+                    )
+                    Box(
+                        Modifier.size(44.dp).clip(CircleShape).clickable(role = Role.Switch) { app.store.setStarred(pack.pack.id, ph.id, !starred); app.progressTick++ }
+                            .semantics { contentDescription = if (starred) "Remove star" else "Star this phrase" },
+                        contentAlignment = Alignment.Center,
+                    ) { Text(if (starred) "★" else "☆", color = if (starred) c.orange else c.muted, fontSize = 24.sp) }
+                }
+                if (guest) ShowGuestDialog(ph, lang) { guest = false }
                 Text(ph.text, color = c.ink, fontSize = 32.sp, fontWeight = FontWeight.Bold, lineHeight = 44.sp)
                 if (ph.romanization.isNotBlank()) Text(ph.romanization, color = c.muted, fontSize = 17.sp)
                 Text(ph.meaning, color = c.ink, fontSize = 19.sp, fontWeight = FontWeight.SemiBold)
@@ -140,6 +157,7 @@ private fun PhraseCard(pack: PackFile, ph: Phrase, lang: String) {
                 ) { PlayIcon(34.dp, c.onAudio) }
                 ControlButton("×3", "Loop") { app.say(ph.text, lang, times = 3) }
             }
+            PronunciationCheck(ph, lang)
             // when to use
             if (ph.whenToUse.isNotBlank() || ph.notes.isNotBlank()) {
                 Column(
@@ -176,7 +194,7 @@ private fun PhraseCard(pack: PackFile, ph: Phrase, lang: String) {
                     }
                 }
                 SecondaryButton("▶  Play whole conversation", Modifier.fillMaxWidth(), color = c.audioText) {
-                    app.speaker.speakAll(ph.example.dialogue.map { it.text }, lang, app.store.normalRate, app.voiceFor(lang))
+                    app.speaker.speakAll(ph.example.dialogue.map { it.text }, lang, app.speed, app.voiceFor(lang))
                 }
             }
             if (ph.likelyResponses.isNotEmpty()) {
@@ -220,15 +238,27 @@ private fun highlight(text: String, key: String, color: Color, underline: Color)
 
 private data class Question(val pack: PackFile, val phrase: Phrase, val options: List<Phrase>)
 
-private fun buildQuestions(packs: List<PackFile>, fam: (String) -> Set<String>, count: Int = 8): List<Question> {
-    val all = packs.flatMap { p -> p.scenarios.flatMap { s -> s.phrases.map { p to it } } }
+/** Today's review: phrases that are due first, then up to 5 new ones; a random mix if nothing is due. */
+private fun buildQuestions(packs: List<PackFile>, store: com.kithandkeen.qonverse.data.Store, count: Int = 10): List<Question> {
+    val today = store.today()
+    val all = packs.flatMap { p -> val s = store.srs(p.pack.id); p.scenarios.flatMap { sc -> sc.phrases.map { Triple(p, it, s[it.id]) } } }
     if (all.isEmpty()) return emptyList()
-    val fresh = all.filter { (p, ph) -> ph.id !in fam(p.pack.id) }.shuffled()
-    val pool = (fresh + all.shuffled()).distinctBy { it.second.id }.take(count)
-    return pool.map { (p, ph) ->
+    val due = all.filter { it.third != null && it.third!!.second <= today }.sortedBy { it.third!!.second }
+    val fresh = all.filter { it.third == null }.shuffled().take(5)
+    var pool = (due + fresh).take(count)
+    if (pool.isEmpty()) pool = all.shuffled().take(8)
+    return pool.map { (p, ph, _) ->
         val others = p.scenarios.flatMap { it.phrases }.filter { it.id != ph.id }.shuffled().take(2)
         Question(p, ph, (others + ph).shuffled())
     }
+}
+
+fun reviewCounts(packs: List<PackFile>, store: com.kithandkeen.qonverse.data.Store): Pair<Int, Int> {
+    val today = store.today()
+    var due = 0; var new = 0
+    packs.forEach { p -> val s = store.srs(p.pack.id); p.scenarios.forEach { sc -> sc.phrases.forEach { ph ->
+        val e = s[ph.id]; if (e == null) new++ else if (e.second <= today) due++ } } }
+    return due to new
 }
 
 @Composable
@@ -236,7 +266,7 @@ fun PracticeScreen(packId: String, close: () -> Unit) {
     val app = LocalApp.current
     val c = Q.c
     val packs = if (packId == "all") app.packs else listOfNotNull(app.pack(packId))
-    val questions = remember(packId) { buildQuestions(packs, { app.store.familiar(it) }) }
+    val questions = remember(packId) { buildQuestions(packs, app.store) }
     var index by remember { mutableIntStateOf(0) }
     var picked by remember(index) { mutableStateOf<Phrase?>(null) }
     if (questions.isEmpty()) { Column { TopBar("Review", close); Text("Add a pack first.", color = c.muted, modifier = Modifier.padding(20.dp)) }; return }
@@ -260,7 +290,8 @@ fun PracticeScreen(packId: String, close: () -> Unit) {
     Column(Modifier.fillMaxSize().background(c.chatBg)) {
         Column(Modifier.fillMaxWidth().background(c.surface).padding(bottom = 10.dp)) {
             TopBar(cue?.speaker?.replaceFirstChar { it.uppercase() }?.ifBlank { "Guest" } ?: "Guest", close) {
-                Text("${index + 1} of ${questions.size}", color = c.muted, fontSize = 13.sp, modifier = Modifier.padding(end = 10.dp))
+                SpeedChip()
+                Text("${index + 1}/${questions.size}", color = c.muted, fontSize = 13.sp, modifier = Modifier.padding(start = 4.dp, end = 10.dp))
             }
             ProgressBar((index + 1) / questions.size.toFloat(), Modifier.padding(horizontal = 16.dp), 4.dp)
         }
@@ -291,7 +322,9 @@ fun PracticeScreen(packId: String, close: () -> Unit) {
                     if (picked == null || isRight || isWrong) {
                         Box(Modifier.align(Alignment.End).clickable(enabled = picked == null) {
                             picked = o
-                            if (o.id == q.phrase.id) { app.say(o.text, lang); app.setFamiliar(q.pack.pack.id, o.id, true) }
+                            val right = o.id == q.phrase.id
+                            if (right) app.say(o.text, lang)
+                            app.store.recordAnswer(q.pack.pack.id, q.phrase.id, right); app.progressTick++
                         }) {
                             Bubble(
                                 true, Modifier.widthIn(max = 320.dp),
@@ -319,7 +352,7 @@ fun PracticeScreen(packId: String, close: () -> Unit) {
                             SpeakerButton({ app.say(q.phrase.text, lang) }, 36.dp, "Hear it again")
                         }
                     } else {
-                        Text("Not quite — the right phrase is in the box colour. It'll come back next time.", color = c.dangerText, fontSize = 13.sp,
+                        Text("Not quite — the right phrase is filled in. It'll come back later today.", color = c.dangerText, fontSize = 13.sp,
                             modifier = Modifier.clip(RoundedCornerShape(14.dp)).background(c.dangerSoft).padding(horizontal = 14.dp, vertical = 8.dp))
                     }
                 }
@@ -417,9 +450,17 @@ fun SettingsScreen(back: () -> Unit) {
                 Text("Speed", color = c.ink, fontWeight = FontWeight.Bold, fontSize = 16.sp)
                 val sliderColors = SliderDefaults.colors(thumbColor = c.box, activeTrackColor = c.box, inactiveTrackColor = c.track)
                 Text("Normal speed  ${"%.1f".format(normal)}×", color = c.ink, fontSize = 15.sp)
-                Slider(normal, { normal = it }, valueRange = 0.6f..1.4f, onValueChangeFinished = { app.store.normalRate = normal }, colors = sliderColors)
+                Slider(normal, { normal = it }, valueRange = 0.6f..1.4f, onValueChangeFinished = { app.changeSpeed(normal) }, colors = sliderColors)
                 Text("Slow speed  ${"%.1f".format(slow)}×", color = c.ink, fontSize = 15.sp)
                 Slider(slow, { slow = it }, valueRange = 0.3f..0.9f, onValueChangeFinished = { app.store.slowRate = slow }, colors = sliderColors)
+
+                Spacer(6.dp)
+                Text("Daily reminder", color = c.ink, fontWeight = FontWeight.Bold, fontSize = 16.sp)
+                ReminderSection()
+
+                Spacer(6.dp)
+                Text("Backup & restore", color = c.ink, fontWeight = FontWeight.Bold, fontSize = 16.sp)
+                BackupSection()
 
                 Spacer(6.dp)
                 Text("Updates", color = c.ink, fontWeight = FontWeight.Bold, fontSize = 16.sp)
@@ -466,5 +507,58 @@ fun SettingsScreen(back: () -> Unit) {
                 Spacer(24.dp)
             }
         }
+    }
+}
+
+@OptIn(ExperimentalLayoutApi::class)
+@Composable
+private fun ReminderSection() {
+    val app = LocalApp.current
+    val c = Q.c
+    val ctx = LocalContext.current
+    var on by remember { mutableStateOf(app.store.reminderOn) }
+    var hour by remember { mutableIntStateOf(app.store.reminderHour) }
+    fun apply(enable: Boolean) {
+        on = enable; app.store.reminderOn = enable
+        com.kithandkeen.qonverse.ReminderWorker.schedule(ctx, hour)
+    }
+    val askPermission = androidx.activity.compose.rememberLauncherForActivityResult(
+        androidx.activity.result.contract.ActivityResultContracts.RequestPermission()
+    ) { granted -> apply(granted) }
+    Column(
+        Modifier.fillMaxWidth().clip(RoundedCornerShape(18.dp)).background(c.surface).border(1.dp, c.line, RoundedCornerShape(18.dp)).padding(16.dp),
+        verticalArrangement = Arrangement.spacedBy(12.dp),
+    ) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Column(Modifier.weight(1f)) {
+                Text("Remind me to practise", color = c.ink, fontSize = 15.sp, fontWeight = FontWeight.SemiBold)
+                Text("A daily notification with your phrase of the day.", color = c.muted, fontSize = 13.sp)
+            }
+            androidx.compose.material3.Switch(
+                checked = on,
+                onCheckedChange = { want ->
+                    if (want && android.os.Build.VERSION.SDK_INT >= 33 &&
+                        androidx.core.content.ContextCompat.checkSelfPermission(ctx, android.Manifest.permission.POST_NOTIFICATIONS) != android.content.pm.PackageManager.PERMISSION_GRANTED
+                    ) askPermission.launch(android.Manifest.permission.POST_NOTIFICATIONS) else apply(want)
+                },
+                colors = androidx.compose.material3.SwitchDefaults.colors(checkedTrackColor = c.box, checkedThumbColor = c.onBox),
+            )
+        }
+        if (on) {
+            FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                listOf(7, 9, 12, 18, 21).forEach { h ->
+                    val sel = h == hour
+                    Text(
+                        if (h < 12) "$h am" else if (h == 12) "12 pm" else "${h - 12} pm",
+                        color = if (sel) c.onBox else c.ink, fontWeight = FontWeight.SemiBold, fontSize = 14.sp,
+                        modifier = Modifier.clip(RoundedCornerShape(999.dp)).background(if (sel) c.box else c.bg)
+                            .border(1.dp, if (sel) c.box else c.line, RoundedCornerShape(999.dp))
+                            .clickable { hour = h; app.store.reminderHour = h; com.kithandkeen.qonverse.ReminderWorker.schedule(ctx, h) }
+                            .padding(horizontal = 14.dp, vertical = 9.dp),
+                    )
+                }
+            }
+        }
+        Text("Tip: add the “Phrase of the day” widget from your home screen's widget list.", color = c.muted, fontSize = 13.sp)
     }
 }

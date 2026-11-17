@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="widget_name">Qonverse phrase of the day</string>
+    <string name="widget_description">A new phrase from your packs each day. Tap to practise.</string>
+    <string name="widget_label">Phrase of the day</string>
+</resources>

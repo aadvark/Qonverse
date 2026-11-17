@@ -1,6 +1,6 @@
 {
-  "versionCode": 2,
-  "versionName": "0.2.0",
-  "apkUrl": "https://raw.githubusercontent.com/aadvark/Qonverse/main/docs/download/Qonverse-0.2.0.apk",
-  "notes": "Checks for updates each time the app opens, plus a few fixes."
+  "versionCode": 3,
+  "versionName": "0.3.0",
+  "apkUrl": "https://raw.githubusercontent.com/aadvark/Qonverse/main/docs/download/Qonverse-0.3.0.apk",
+  "notes": "Backup & restore (works between Android and the web app), a speed button on learning screens, Show guest card, starred phrases and search, pronunciation check, smarter review, hands-free shadow mode, daily reminder and a phrase-of-the-day widget."
 }

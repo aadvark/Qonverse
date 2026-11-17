@@ -59,6 +59,8 @@ fun langEnglish(tag: String): String =
 
 @Composable
 fun HomeScreen(
+    openStarred: () -> Unit,
+    openSearch: () -> Unit,
     openPack: (String) -> Unit,
     openPhrase: (String, String, Int) -> Unit,
     addPack: () -> Unit,
@@ -68,7 +70,9 @@ fun HomeScreen(
     val app = LocalApp.current
     val c = Q.c
     val packs = app.packs
-    val due = packs.sumOf { p -> p.scenarios.sumOf { it.phrases.size } - app.familiar(p.pack.id).size }.coerceAtLeast(0)
+    app.progressTick
+    val (dueCount, newCount) = reviewCounts(packs, app.store)
+    val todays = dueCount + minOf(newCount, 5)
     val last = app.store.last()
 
     Box(Modifier.fillMaxSize()) {
@@ -97,8 +101,8 @@ fun HomeScreen(
                 Row(verticalAlignment = Alignment.Top) {
                     Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
                         Text("TODAY'S REVIEW", color = c.onBox.copy(alpha = 0.85f), fontSize = 13.sp, fontWeight = FontWeight.SemiBold)
-                        Text(if (due == 0) "All familiar" else "$due phrases", color = c.onBox, fontSize = 30.sp, fontWeight = FontWeight.ExtraBold)
-                        Text("Practise as a chat with a guest", color = c.onBox.copy(alpha = 0.9f), fontSize = 14.sp)
+                        Text(if (todays == 0) "All done today" else "$todays phrases", color = c.onBox, fontSize = 30.sp, fontWeight = FontWeight.ExtraBold)
+                        Text(if (todays == 0) "Practise anyway, or come back tomorrow" else "$dueCount due · ${minOf(newCount, 5)} new · as a chat with a guest", color = c.onBox.copy(alpha = 0.9f), fontSize = 14.sp)
                     }
                     Text("話", color = c.orange, fontSize = 40.sp, fontWeight = FontWeight.Bold)
                 }
@@ -108,6 +112,8 @@ fun HomeScreen(
                     contentAlignment = Alignment.Center,
                 ) { Text("Start review", color = c.boxText, fontWeight = FontWeight.SemiBold, fontSize = 16.sp) }
             }
+            var showReminder by remember { mutableStateOf(app.store.shouldRemindBackup()) }
+            if (showReminder) BackupReminder { showReminder = false }
             if (last != null) {
                 val lp = app.pack(last.first)
                 val ls = lp?.scenarios?.firstOrNull { it.id == last.second }
@@ -130,6 +136,11 @@ fun HomeScreen(
                     }
                 }
             }
+            Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                val nStar = app.store.starred().size
+                Shortcut("★  Starred", if (nStar == 0) "Keep key phrases here" else "$nStar phrases", Modifier.weight(1f), openStarred)
+                Shortcut("⌕  Search", "All packs", Modifier.weight(1f), openSearch)
+            }
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text("My packs", color = c.ink, fontSize = 18.sp, fontWeight = FontWeight.Bold, modifier = Modifier.weight(1f))
                 Text(
@@ -143,6 +154,18 @@ fun HomeScreen(
             packs.forEach { p -> PackRow(p) { openPack(p.pack.id) } }
             Spacer(24.dp)
         }
+    }
+}
+
+@Composable
+private fun Shortcut(title: String, sub: String, modifier: Modifier, onClick: () -> Unit) {
+    val c = Q.c
+    Column(
+        modifier.clip(RoundedCornerShape(16.dp)).background(c.surface).border(1.dp, c.line, RoundedCornerShape(16.dp))
+            .clickable(role = Role.Button, onClick = onClick).padding(14.dp),
+    ) {
+        Text(title, color = c.ink, fontWeight = FontWeight.SemiBold, fontSize = 15.sp)
+        Text(sub, color = c.muted, fontSize = 12.sp)
     }
 }
 
@@ -280,7 +303,7 @@ fun SmallButton(text: String, onClick: () -> Unit) {
 // ================================================================ PACK
 
 @Composable
-fun PackScreen(id: String, back: () -> Unit, openScenario: (String) -> Unit, practice: () -> Unit, deleted: () -> Unit) {
+fun PackScreen(id: String, back: () -> Unit, openScenario: (String) -> Unit, practice: () -> Unit, shadow: () -> Unit, deleted: () -> Unit) {
     val app = LocalApp.current
     val c = Q.c
     val p = app.pack(id) ?: run { TopBar("Pack not found", back); return }
@@ -322,7 +345,10 @@ fun PackScreen(id: String, back: () -> Unit, openScenario: (String) -> Unit, pra
                         Text("Tap to download it free from your phone's speech settings.", color = c.ink, fontSize = 13.sp)
                     }
                 }
-                PrimaryButton("Practise this pack", Modifier.fillMaxWidth(), onClick = practice)
+                Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                    PrimaryButton("Practise", Modifier.weight(1f), onClick = practice)
+                    SecondaryButton("🎧  Shadow mode", Modifier.weight(1f), onClick = shadow)
+                }
             }
             Spacer(16.dp)
             Column(

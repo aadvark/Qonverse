@@ -1,1 +1,1 @@
-Checks for updates each time the app opens, plus a few fixes.
+Backup & restore (works between Android and the web app), a speed button on learning screens, Show guest card, starred phrases and search, pronunciation check, smarter review, hands-free shadow mode, daily reminder and a phrase-of-the-day widget.

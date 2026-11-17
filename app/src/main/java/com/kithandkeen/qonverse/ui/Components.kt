@@ -298,3 +298,37 @@ fun Spacer(h: Dp) = androidx.compose.foundation.layout.Spacer(Modifier.height(h)
 
 @Composable
 fun HSpacer(w: Dp) = androidx.compose.foundation.layout.Spacer(Modifier.width(w))
+
+private val SPEEDS = listOf(0.6f, 0.8f, 1.0f, 1.2f)
+
+/** Tap to cycle playback speed (0.6× → 0.8× → 1.0× → 1.2×). Saved as the normal speed. */
+@Composable
+fun SpeedChip() {
+    val app = com.kithandkeen.qonverse.LocalApp.current
+    val c = Q.c
+    val cur = app.speed
+    val label = "%.1f×".format(cur)
+    Row(
+        Modifier
+            .padding(end = 4.dp)
+            .height(36.dp)
+            .clip(RoundedCornerShape(999.dp))
+            .background(c.surface)
+            .border(1.dp, c.line, RoundedCornerShape(999.dp))
+            .clickable(role = Role.Button, onClickLabel = "Change playback speed") {
+                val next = SPEEDS.firstOrNull { it > cur + 0.01f } ?: SPEEDS.first()
+                app.changeSpeed(next)
+            }
+            .semantics { contentDescription = "Playback speed $label. Tap to change." }
+            .padding(horizontal = 12.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Canvas(Modifier.size(14.dp)) {
+            val w = size.width
+            drawArc(c.audioText, 150f, 240f, false, style = Stroke(2.dp.toPx(), cap = StrokeCap.Round))
+            drawLine(c.audioText, Offset(w / 2, w / 2), Offset(w * 0.78f, w * 0.28f), 2.dp.toPx(), StrokeCap.Round)
+        }
+        HSpacer(6.dp)
+        Text(label, color = c.audioText, fontWeight = FontWeight.Bold, fontSize = 14.sp)
+    }
+}
