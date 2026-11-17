@@ -14,8 +14,25 @@ android {
         applicationId = "com.kithandkeen.qonverse"
         minSdk = 26
         targetSdk = 35
-        versionCode = 1
-        versionName = "0.1.0"
+        versionCode = 2
+        versionName = "0.2.0"
+        buildConfigField("String", "UPDATE_URL", "\"https://raw.githubusercontent.com/aadvark/Qonverse/main/docs/version.json\"")
+    }
+
+    // Preview builds are signed with the Qonverse preview key so in-app updates install over each other.
+    // Point QONVERSE_KEYSTORE (+ _PASSWORD, _ALIAS, _KEY_PASSWORD) at it; without it, the debug key is used.
+    signingConfigs {
+        create("preview") {
+            val ks = System.getenv("QONVERSE_KEYSTORE")
+            if (ks != null && file(ks).exists()) {
+                storeFile = file(ks)
+                storePassword = System.getenv("QONVERSE_KEYSTORE_PASSWORD") ?: "android"
+                keyAlias = System.getenv("QONVERSE_KEY_ALIAS") ?: "androiddebugkey"
+                keyPassword = System.getenv("QONVERSE_KEY_PASSWORD") ?: "android"
+            } else {
+                initWith(getByName("debug"))
+            }
+        }
     }
 
     buildTypes {
@@ -23,8 +40,8 @@ android {
             isMinifyEnabled = true
             isShrinkResources = true
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
-            // Preview builds are signed with the debug key. Use your own upload key for Google Play.
-            signingConfig = signingConfigs.getByName("debug")
+            // Use your own upload key (and turn off the in-app updater) for Google Play.
+            signingConfig = signingConfigs.getByName("preview")
         }
     }
     compileOptions {
@@ -32,7 +49,7 @@ android {
         targetCompatibility = JavaVersion.VERSION_17
     }
     kotlinOptions { jvmTarget = "17" }
-    buildFeatures { compose = true }
+    buildFeatures { compose = true; buildConfig = true }
     lint { checkReleaseBuilds = false }
     testOptions { unitTests { isIncludeAndroidResources = true } }
     sourceSets["main"].assets.srcDir(layout.buildDirectory.dir("qassets"))

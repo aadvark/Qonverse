@@ -1,0 +1,16 @@
+{
+  "name": "Qonverse",
+  "short_name": "Qonverse",
+  "description": "Learn the short spoken phrases your job needs, in any language.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#FBFBFD",
+  "theme_color": "#7464B8",
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "icons/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

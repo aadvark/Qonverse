@@ -3,401 +3,479 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Qonverse — learn the phrases your job needs</title>
-<meta name="description" content="Qonverse is a free, open source Android app for learning the short spoken phrases you need at work, in any language. Make a phrase pack with any AI, then listen, imitate and practise.">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Crect width='40' height='40' rx='10' fill='%237464B8'/%3E%3Cg transform='translate(5 5) scale(.75)'%3E%3Ccircle cx='19' cy='19' r='13.5' fill='none' stroke='white' stroke-width='5'/%3E%3Cpath d='M24 31.2 Q28.6 37.2 38 37.6 Q32.6 33.2 31.4 24' fill='white'/%3E%3C/g%3E%3C/svg%3E">
+<title>Qonverse — speak the phrases your job needs</title>
+<meta name="description" content="Qonverse is a free, open source app for learning the short spoken phrases you need at work, in any language. Make a phrase pack with any AI, then listen, imitate and practise. Android app and web app for iPhone.">
+<meta property="og:title" content="Qonverse — speak the phrases your job needs">
+<meta property="og:description" content="Free, open source. Make a phrase pack for your job with any AI, then listen, imitate and practise.">
+<meta name="theme-color" content="#7464B8">
+<link rel="icon" href="app/icons/icon-192.png">
+<link rel="apple-touch-icon" href="app/icons/apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Plus+Jakarta+Sans:wght@700;800&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap">
 <style>
 :root{
-  --bg:#FBFBFD; --surface:#FFFFFF; --ink:#15171C; --muted:#5B6070; --line:#E4E2DC;
+  --bg:#FBFBFD; --bg2:#F4F2FA; --surface:#FFFFFF; --ink:#15171C; --muted:#5B6070; --line:#E6E4EE;
   --box:#7464B8; --box-text:#5D4E9E; --box-deep:#4A3E80; --box-soft:#F1EEF8;
-  --audio:#B8D98A; --audio-text:#557A2E; --orange:#DDA855;
+  --audio:#B8D98A; --audio-ink:#15171C; --audio-text:#557A2E; --orange:#DDA855; --wall:#7464B8;
+  --shadow:0 24px 60px rgba(42,34,90,.14);
 }
 @media (prefers-color-scheme: dark){
-  :root{ --bg:#101315; --surface:#1A1E21; --ink:#ECEDEA; --muted:#A2A8AE; --line:#2C3236;
-    --box:#565C9E; --box-text:#A9B0D8; --box-deep:#C5CAE6; --box-soft:#1F2035; --audio:#6FB8AE; --audio-text:#6FB8AE; }
+  :root{ --bg:#101315; --bg2:#14171A; --surface:#1A1E21; --ink:#ECEDEA; --muted:#A2A8AE; --line:#2C3236;
+    --box:#565C9E; --box-text:#A9B0D8; --box-deep:#C5CAE6; --box-soft:#1F2035; --audio:#6FB8AE; --audio-ink:#0B0B0C; --audio-text:#6FB8AE; --wall:#8C93C8;
+    --shadow:0 24px 60px rgba(0,0,0,.45); }
 }
 *{box-sizing:border-box}
 html{scroll-behavior:smooth}
-body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 Inter,system-ui,sans-serif;-webkit-font-smoothing:antialiased}
-a{color:var(--box-text)}
-a:hover{color:var(--box-deep)}
-h1,h2,h3{font-family:"Plus Jakarta Sans",Inter,sans-serif;letter-spacing:-.02em;line-height:1.15;margin:0}
-.wrap{max-width:1120px;margin:0 auto;padding:0 24px}
-.cubes{position:absolute;inset:0;z-index:-1;pointer-events:none;color:var(--box);opacity:.22;
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 Inter,system-ui,sans-serif;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+a{color:var(--box-text)} a:hover{color:var(--box-deep)}
+h1,h2,h3{font-family:"Plus Jakarta Sans",Inter,sans-serif;letter-spacing:-.025em;line-height:1.1;margin:0}
+.wrap{max-width:1160px;margin:0 auto;padding:0 24px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+/* cube wallpaper, fading upwards */
+.cubes{position:absolute;inset:0;width:100%;height:100%;z-index:-1;pointer-events:none;color:var(--wall);opacity:.2;
   -webkit-mask-image:linear-gradient(to top,#000 0%,rgba(0,0,0,.7) 35%,rgba(0,0,0,.25) 65%,transparent 92%);
           mask-image:linear-gradient(to top,#000 0%,rgba(0,0,0,.7) 35%,rgba(0,0,0,.25) 65%,transparent 92%)}
-header.top{display:flex;align-items:center;justify-content:space-between;padding:20px 0}
-.logo{display:flex;align-items:center;font:800 26px/1 "Plus Jakarta Sans",sans-serif;letter-spacing:-.02em;color:var(--ink);text-decoration:none}
-.logo svg{flex:none}
+.walled{position:relative;isolation:isolate}
+/* preview banner */
+.preview-bar{background:var(--box-soft);color:var(--box-deep);font-size:14px;text-align:center;padding:9px 16px}
+.preview-bar b{font-weight:700}
+.preview-bar a{color:inherit;font-weight:600}
+/* nav */
+header.top{position:sticky;top:0;z-index:20;backdrop-filter:saturate(1.4) blur(12px);-webkit-backdrop-filter:saturate(1.4) blur(12px);background:color-mix(in srgb,var(--bg) 78%,transparent);border-bottom:1px solid transparent;transition:border-color .2s}
+header.top.scrolled{border-color:var(--line)}
+.nav{display:flex;align-items:center;justify-content:space-between;height:68px;gap:16px}
+.logo{display:flex;align-items:center;font:800 25px/1 "Plus Jakarta Sans",sans-serif;letter-spacing:-.02em;color:var(--ink);text-decoration:none}
 .logo span{margin-left:-.06em}
-nav.links{display:flex;gap:22px;flex-wrap:wrap}
-nav.links a{color:var(--muted);text-decoration:none;font-weight:500}
-nav.links a:hover{color:var(--ink)}
-.hero{position:relative;isolation:isolate;padding:48px 0 72px;overflow:hidden}
-.hero-grid{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);gap:48px;align-items:center}
-.eyebrow{display:inline-block;background:var(--box-soft);color:var(--box-text);font-weight:600;font-size:14px;border-radius:999px;padding:6px 14px}
-.hero h1{font-size:clamp(38px,5.4vw,60px);margin:18px 0 18px}
-.hero h1 em{font-style:normal;color:var(--box-text)}
-.lead{font-size:19px;color:var(--muted);max-width:560px;margin:0 0 28px}
-.cta{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
-.btn{display:inline-flex;align-items:center;gap:10px;min-height:52px;padding:0 22px;border-radius:16px;font-weight:600;font-size:16px;text-decoration:none;border:1px solid transparent;cursor:pointer;font-family:inherit}
-.btn-primary{background:var(--box);color:#fff}
-.btn-primary:hover{color:#fff;filter:brightness(1.07)}
+.nav-links{display:flex;align-items:center;gap:26px}
+.nav-links a{color:var(--muted);text-decoration:none;font-weight:500;font-size:15px}
+.nav-links a:hover{color:var(--ink)}
+.nav-links a.btn,.nav-links a.btn:hover{color:#fff}
+/* buttons */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:52px;padding:0 22px;border-radius:16px;font-weight:600;font-size:16px;text-decoration:none;border:1px solid transparent;cursor:pointer;font-family:inherit;transition:transform .15s ease, box-shadow .2s ease, filter .2s}
+.btn:hover{transform:translateY(-2px)}
+.btn:active{transform:translateY(0)}
+.btn-primary{background:var(--box);color:#fff;box-shadow:0 10px 24px color-mix(in srgb,var(--box) 35%,transparent)}
+.btn-primary:hover{color:#fff;filter:brightness(1.06)}
+.btn-audio{background:var(--audio);color:var(--audio-ink);box-shadow:0 10px 24px color-mix(in srgb,var(--audio) 40%,transparent)}
+.btn-audio:hover{color:var(--audio-ink)}
 .btn-ghost{background:var(--surface);color:var(--ink);border-color:var(--line)}
 .btn-ghost:hover{color:var(--ink);border-color:var(--box)}
-.fine{font-size:13.5px;color:var(--muted);margin-top:14px}
-.phones{display:flex;gap:18px;justify-content:center;align-items:flex-start}
-.phone{width:min(240px,30vw);border-radius:28px;overflow:hidden;border:1px solid var(--line);background:var(--surface);box-shadow:0 18px 50px rgba(21,23,28,.12)}
+.btn small{display:block;font-weight:500;font-size:12px;opacity:.85;line-height:1.1}
+.btn .two{display:flex;flex-direction:column;align-items:flex-start;line-height:1.2}
+.btn-sm{min-height:42px;padding:0 16px;font-size:15px;border-radius:12px}
+/* hero */
+.hero{padding:56px 0 96px;overflow:hidden}
+.hero-grid{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);gap:40px;align-items:center}
+.eyebrow{display:inline-flex;align-items:center;gap:8px;background:var(--surface);border:1px solid var(--line);color:var(--box-text);font-weight:600;font-size:14px;border-radius:999px;padding:6px 14px 6px 8px}
+.eyebrow i{width:22px;height:22px;border-radius:11px;background:var(--box);display:inline-flex;align-items:center;justify-content:center}
+.hero h1{font-size:clamp(40px,5.8vw,68px);margin:20px 0 20px}
+.rotator{display:inline-block;position:relative;color:var(--box-text);min-width:4ch}
+.rotator span{display:inline-block;animation:wordIn .55s cubic-bezier(.2,.8,.2,1) both}
+@keyframes wordIn{from{opacity:0;transform:translateY(.45em) rotateX(40deg)}to{opacity:1;transform:none}}
+.lead{font-size:19px;color:var(--muted);max-width:560px;margin:0 0 30px}
+.cta{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+.fine{font-size:13.5px;color:var(--muted);margin-top:16px}
+.stage{position:relative;height:620px}
+.phone{position:absolute;width:268px;border-radius:34px;overflow:hidden;border:6px solid var(--surface);background:var(--surface);box-shadow:var(--shadow)}
 .phone img{display:block;width:100%;height:auto}
-.phone.lift{margin-top:48px}
-section{padding:72px 0}
-.sec-title{font-size:clamp(28px,3.6vw,40px);margin-bottom:12px}
-.sec-lead{color:var(--muted);font-size:18px;max-width:640px;margin:0 0 36px}
-.steps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px}
-.card{background:var(--surface);border:1px solid var(--line);border-radius:22px;padding:24px}
-.num{width:36px;height:36px;border-radius:18px;background:var(--box);color:#fff;font-weight:700;display:flex;align-items:center;justify-content:center;margin-bottom:14px}
-.card h3{font-size:20px;margin-bottom:8px}
-.card p{margin:0;color:var(--muted)}
-.prompt-box{margin-top:20px;background:var(--box-soft);border-radius:22px;padding:22px;display:flex;gap:16px;align-items:center;justify-content:space-between;flex-wrap:wrap}
-.prompt-box p{margin:0;color:var(--box-deep);font-weight:500;max-width:620px}
-details{margin-top:14px}
-details summary{cursor:pointer;color:var(--box-text);font-weight:600;min-height:44px;display:flex;align-items:center}
-details pre{white-space:pre-wrap;background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:18px;font-size:13px;max-height:420px;overflow:auto}
-.features{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px}
-.feat .ico{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;margin-bottom:14px}
-.ico.box{background:var(--box-soft);color:var(--box-text)}
-.ico.audio{background:var(--audio);color:#15171C}
-.packs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px}
-.pack .badge{width:56px;height:56px;border-radius:14px;background:var(--box-soft);color:var(--box-text);font-weight:700;display:flex;align-items:center;justify-content:center;margin-bottom:14px}
+.phone.a{left:6%;top:10px;animation:float 7s ease-in-out infinite}
+.phone.b{right:4%;top:90px;animation:float 7s ease-in-out infinite -3.5s}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-14px)}}
+.bubble{position:absolute;z-index:3;background:var(--surface);border:1.5px solid var(--box);border-radius:18px;padding:10px 14px;box-shadow:0 14px 34px rgba(42,34,90,.16);font-size:14px;line-height:1.35;opacity:0;animation:pop .6s cubic-bezier(.2,.9,.3,1.3) forwards}
+.bubble b{display:block;font-size:17px}
+.bubble span{color:var(--muted);font-size:12.5px}
+.bubble::after{content:"";position:absolute;top:100%;left:18px;border:8px solid transparent;border-top-color:var(--box);border-left-color:var(--box);transform:skewX(-20deg)}
+.bubble.mine{background:var(--box-soft)}
+.bubble.mine::after{left:auto;right:18px;border-left-color:transparent;border-right-color:var(--box);transform:skewX(20deg)}
+.bubble.b1{left:-2%;top:420px;animation-delay:.6s}
+.bubble.b2{right:-2%;top:30px;animation-delay:1.4s}
+.bubble.b3{left:38%;top:560px;animation-delay:2.2s}
+@keyframes pop{from{opacity:0;transform:translateY(12px) scale(.9)}to{opacity:1;transform:none}}
+.play-chip{position:absolute;z-index:4;right:30%;top:300px;width:64px;height:64px;border-radius:32px;background:var(--audio);display:flex;align-items:center;justify-content:center;box-shadow:0 12px 30px rgba(0,0,0,.18)}
+.play-chip::before,.play-chip::after{content:"";position:absolute;inset:0;border-radius:50%;border:2px solid var(--audio);animation:ring 2.4s ease-out infinite}
+.play-chip::after{animation-delay:1.2s}
+@keyframes ring{from{transform:scale(1);opacity:.8}to{transform:scale(1.9);opacity:0}}
+/* marquee */
+.marquee{border-block:1px solid var(--line);background:var(--surface);overflow:hidden;padding:18px 0;--gap:42px}
+.marquee .track{display:flex;gap:var(--gap);width:max-content;animation:scroll 38s linear infinite}
+.marquee:hover .track{animation-play-state:paused}
+.marquee .item{display:flex;align-items:baseline;gap:10px;white-space:nowrap;font-size:20px;font-weight:600}
+.marquee .item small{font-size:13px;color:var(--muted);font-weight:500}
+.marquee .dot{color:var(--box);opacity:.5}
+@keyframes scroll{to{transform:translateX(calc(-50% - var(--gap)/2))}}
+/* sections */
+section{padding:96px 0;overflow:hidden}
+.kicker{color:var(--box-text);font-weight:700;font-size:14px;letter-spacing:.08em;text-transform:uppercase;margin-bottom:12px}
+.sec-title{font-size:clamp(30px,4vw,46px);margin-bottom:14px}
+.sec-lead{color:var(--muted);font-size:18px;max-width:640px;margin:0 0 44px}
+.center{text-align:center}.center .sec-lead{margin-inline:auto}
+.reveal{opacity:0;transform:translateY(28px);transition:opacity .7s ease,transform .7s cubic-bezier(.2,.8,.2,1)}
+.reveal.in{opacity:1;transform:none}
+/* steps */
+.steps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:22px;position:relative}
+.step{background:var(--surface);border:1px solid var(--line);border-radius:24px;padding:28px;position:relative;transition:transform .25s,box-shadow .25s}
+.step:hover{transform:translateY(-6px);box-shadow:var(--shadow)}
+.step .ic{width:56px;height:56px;border-radius:16px;background:var(--box-soft);color:var(--box-text);display:flex;align-items:center;justify-content:center;margin-bottom:18px}
+.step .n{position:absolute;top:22px;right:24px;font:800 44px/1 "Plus Jakarta Sans",sans-serif;color:var(--box-soft)}
+.step h3{font-size:21px;margin-bottom:8px}
+.step p{margin:0;color:var(--muted)}
+.prompt-strip{margin-top:24px;border-radius:24px;padding:22px 24px;background:var(--box);color:#fff;display:flex;gap:18px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+.prompt-strip p{margin:0;font-weight:500;max-width:620px}
+.prompt-strip .btn-ghost{background:rgba(255,255,255,.14);border-color:rgba(255,255,255,.3);color:#fff}
+.prompt-strip .btn-light{background:#fff;color:var(--box-deep)}
+/* carousel */
+.carousel{position:relative;background:var(--surface);border:1px solid var(--line);border-radius:32px;padding:44px;overflow:hidden;box-shadow:var(--shadow)}
+.slides{position:relative;min-height:540px}
+.slide{position:absolute;inset:0;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,.9fr);gap:40px;align-items:center;opacity:0;visibility:hidden;transform:translateX(40px);transition:opacity .6s ease,transform .6s cubic-bezier(.2,.8,.2,1),visibility .6s}
+.slide.on{opacity:1;visibility:visible;transform:none}
+.slide .ic{width:64px;height:64px;border-radius:18px;display:flex;align-items:center;justify-content:center;margin-bottom:22px}
+.ic.box{background:var(--box-soft);color:var(--box-text)} .ic.audio{background:var(--audio);color:var(--audio-ink)}
+.slide h3{font-size:clamp(26px,3vw,36px);margin-bottom:14px}
+.slide p{color:var(--muted);font-size:18px;margin:0 0 20px;max-width:480px}
+.slide ul{list-style:none;padding:0;margin:0;display:grid;gap:10px}
+.slide li{display:flex;gap:10px;align-items:flex-start;color:var(--ink)}
+.slide li::before{content:"";flex:none;width:20px;height:20px;margin-top:3px;border-radius:10px;background:var(--box-soft) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%237464B8' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 12 4 4 8-8'/%3E%3C/svg%3E") center/12px no-repeat}
+.slide .shot{justify-self:center;width:260px;border-radius:30px;overflow:hidden;border:6px solid var(--bg2);box-shadow:var(--shadow)}
+.slide .shot img{display:block;width:100%;height:auto}
+.car-nav{display:flex;align-items:center;justify-content:space-between;margin-top:26px;gap:16px}
+.tabs{display:flex;gap:8px;flex-wrap:wrap}
+.tab{border:1px solid var(--line);background:var(--bg);color:var(--muted);border-radius:999px;padding:8px 14px;font:600 14px Inter,sans-serif;cursor:pointer;position:relative;overflow:hidden}
+.tab[aria-selected="true"]{color:var(--box-deep);border-color:var(--box);background:var(--box-soft)}
+.tab .fill{position:absolute;left:0;bottom:0;height:3px;background:var(--box);width:0}
+.tab[aria-selected="true"] .fill{animation:fill var(--dur,5s) linear forwards}
+.carousel.paused .tab .fill{animation-play-state:paused}
+@keyframes fill{to{width:100%}}
+.arrows{display:flex;gap:8px}
+.arrow{width:46px;height:46px;border-radius:23px;border:1px solid var(--line);background:var(--surface);color:var(--ink);display:flex;align-items:center;justify-content:center;cursor:pointer}
+.arrow:hover{border-color:var(--box)}
+/* audience */
+.who{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:14px}
+.who div{background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:20px 14px;text-align:center;font-weight:600;transition:transform .25s}
+.who div:hover{transform:translateY(-5px) rotate(-1deg)}
+.who svg{display:block;margin:0 auto 10px;color:var(--box-text)}
+/* packs */
+.packs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:18px}
+.pack{background:var(--surface);border:1px solid var(--line);border-radius:24px;padding:22px;transition:transform .25s,box-shadow .25s}
+.pack:hover{transform:translateY(-6px);box-shadow:var(--shadow)}
+.pack .badge{width:56px;height:56px;border-radius:16px;background:var(--box-soft);color:var(--box-text);font-weight:700;display:flex;align-items:center;justify-content:center;margin-bottom:14px}
 .pack h3{font-size:17px;margin-bottom:4px}
-.pack .sample{margin:14px 0;padding:12px 14px;border-radius:14px;background:var(--bg);border:1px solid var(--line)}
-.pack .sample b{display:block;font-size:20px;font-weight:600}
+.pack .sample{margin:14px 0;padding:12px 14px;border-radius:16px;background:var(--bg);border:1px solid var(--line)}
+.pack .sample b{display:block;font-size:21px;font-weight:600}
 .pack .sample span{display:block;font-size:13.5px;color:var(--muted)}
 .pack a{font-weight:600;font-size:14.5px}
-.split{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:20px}
-ol.install{margin:0;padding-left:20px;color:var(--muted)}
-ol.install li{margin:6px 0}
-.dl-card{background:var(--box);color:#fff;border-radius:22px;padding:28px;display:flex;flex-direction:column;gap:12px}
-.dl-card h3{font-size:24px;color:#fff}
-.dl-card p{margin:0;color:rgba(255,255,255,.9)}
-.dl-card .btn{background:#fff;color:var(--box-deep);align-self:flex-start}
-.dl-card code{font-size:12px;word-break:break-all;color:rgba(255,255,255,.85)}
-footer{padding:40px 0 56px;border-top:1px solid var(--line);color:var(--muted);font-size:14px}
+/* get it */
+.get{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:22px}
+.get-card{border-radius:28px;padding:32px;display:flex;flex-direction:column;gap:14px;position:relative;overflow:hidden}
+.get-card.android{background:var(--box);color:#fff}
+.get-card.web{background:var(--surface);border:1px solid var(--line)}
+.get-card h3{font-size:28px}
+.get-card p{margin:0}
+.get-card.android p{color:rgba(255,255,255,.9)}
+.get-card .btn{align-self:flex-start}
+.get-card.android .btn{background:#fff;color:var(--box-deep);box-shadow:none}
+.get-card ol{margin:0;padding-left:20px}
+.get-card.android ol{color:rgba(255,255,255,.92)}
+.get-card.web ol{color:var(--muted)}
+.get-card li{margin:4px 0}
+.get-card code{font-size:11.5px;word-break:break-all;opacity:.8}
+.get-card .big-ic{position:absolute;right:-20px;top:-20px;opacity:.12}
+.disclaimer{margin-top:22px;border:1px dashed var(--box);background:var(--box-soft);border-radius:22px;padding:22px 24px;display:flex;gap:16px;align-items:flex-start}
+.disclaimer .ic{flex:none;width:44px;height:44px;border-radius:12px;background:var(--surface);color:var(--box-text);display:flex;align-items:center;justify-content:center}
+.disclaimer h3{font-size:18px;margin-bottom:6px}
+.disclaimer ul{margin:0;padding-left:18px;color:var(--muted)}
+.disclaimer li{margin:3px 0}
+/* final cta */
+.final{border-radius:36px;padding:64px 32px;text-align:center;background:var(--box);color:#fff;position:relative;overflow:hidden;isolation:isolate}
+.final h2{font-size:clamp(30px,4vw,46px);margin-bottom:14px}
+.final p{color:rgba(255,255,255,.9);font-size:18px;margin:0 auto 28px;max-width:560px}
+.final .cubes{color:#fff;opacity:.16}
+.final .btn-light{background:#fff;color:var(--box-deep)}
+.final .btn-outline{background:transparent;border-color:rgba(255,255,255,.5);color:#fff}
+.final .cta{justify-content:center}
+footer{padding:44px 0 60px;color:var(--muted);font-size:14px}
 footer .row{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;align-items:center}
-@media (max-width:900px){
-  .hero-grid,.split{grid-template-columns:1fr}
-  .steps,.features{grid-template-columns:1fr}
+.hanzi{color:var(--orange)}
+@media (max-width:980px){
+  .hero-grid{grid-template-columns:1fr}
+  .stage{height:520px;max-width:520px;margin:0 auto;width:100%}
+  .phone{width:220px}
+  .steps,.get{grid-template-columns:1fr}
   .packs{grid-template-columns:repeat(2,minmax(0,1fr))}
-  .phone{width:min(200px,42vw)} .phone.hide-sm{display:none}
+  .who{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .slide{grid-template-columns:1fr;gap:24px}
+  .slides{min-height:880px}
+  .slide .shot{width:220px}
+  .carousel{padding:28px}
+  .nav-links a.hide-sm{display:none}
 }
-@media (max-width:520px){ .packs{grid-template-columns:1fr} nav.links{display:none} }
+@media (max-width:560px){
+  .packs{grid-template-columns:1fr}
+  .who{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .phone{width:180px} .phone.b{top:70px}
+  .stage{height:430px}
+  .bubble.b1{top:330px} .bubble.b3{top:380px;left:30%} .play-chip{top:230px}
+  .nav-links a{display:none} .nav-links .btn{display:inline-flex}
+  .slides{min-height:840px}
+  section{padding:72px 0}
+}
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{animation:none !important;transition:none !important}
+  .reveal{opacity:1;transform:none}
+  .bubble{opacity:1}
+}
 </style>
 </head>
 <body>
 
-<div class="hero">
-  <svg class="cubes" aria-hidden="true" width="100%" height="100%"><defs><pattern id="cube" width="29.445" height="51" patternUnits="userSpaceOnUse"><path d="M-29.44 -34.00L-14.72 -42.50L0.00 -34.00L0.00 -17.00L-14.72 -8.50L-29.44 -17.00ZM-29.44 -34.00L-14.72 -25.50L0.00 -34.00M-14.72 -25.50L-14.72 -8.50M0.00 -34.00L14.72 -42.50L29.44 -34.00L29.44 -17.00L14.72 -8.50L0.00 -17.00ZM0.00 -34.00L14.72 -25.50L29.44 -34.00M14.72 -25.50L14.72 -8.50M29.44 -34.00L44.17 -42.50L58.89 -34.00L58.89 -17.00L44.17 -8.50L29.44 -17.00ZM29.44 -34.00L44.17 -25.50L58.89 -34.00M44.17 -25.50L44.17 -8.50M58.89 -34.00L73.61 -42.50L88.33 -34.00L88.33 -17.00L73.61 -8.50L58.89 -17.00ZM58.89 -34.00L73.61 -25.50L88.33 -34.00M73.61 -25.50L73.61 -8.50M-44.17 -8.50L-29.44 -17.00L-14.72 -8.50L-14.72 8.50L-29.44 17.00L-44.17 8.50ZM-44.17 -8.50L-29.44 0.00L-14.72 -8.50M-29.44 0.00L-29.44 17.00M-14.72 -8.50L0.00 -17.00L14.72 -8.50L14.72 8.50L0.00 17.00L-14.72 8.50ZM-14.72 -8.50L0.00 0.00L14.72 -8.50M0.00 0.00L0.00 17.00M14.72 -8.50L29.44 -17.00L44.17 -8.50L44.17 8.50L29.44 17.00L14.72 8.50ZM14.72 -8.50L29.44 0.00L44.17 -8.50M29.44 0.00L29.44 17.00M44.17 -8.50L58.89 -17.00L73.61 -8.50L73.61 8.50L58.89 17.00L44.17 8.50ZM44.17 -8.50L58.89 0.00L73.61 -8.50M58.89 0.00L58.89 17.00M-29.44 17.00L-14.72 8.50L0.00 17.00L0.00 34.00L-14.72 42.50L-29.44 34.00ZM-29.44 17.00L-14.72 25.50L0.00 17.00M-14.72 25.50L-14.72 42.50M0.00 17.00L14.72 8.50L29.44 17.00L29.44 34.00L14.72 42.50L0.00 34.00ZM0.00 17.00L14.72 25.50L29.44 17.00M14.72 25.50L14.72 42.50M29.44 17.00L44.17 8.50L58.89 17.00L58.89 34.00L44.17 42.50L29.44 34.00ZM29.44 17.00L44.17 25.50L58.89 17.00M44.17 25.50L44.17 42.50M58.89 17.00L73.61 8.50L88.33 17.00L88.33 34.00L73.61 42.50L58.89 34.00ZM58.89 17.00L73.61 25.50L88.33 17.00M73.61 25.50L73.61 42.50M-44.17 42.50L-29.44 34.00L-14.72 42.50L-14.72 59.50L-29.44 68.00L-44.17 59.50ZM-44.17 42.50L-29.44 51.00L-14.72 42.50M-29.44 51.00L-29.44 68.00M-14.72 42.50L0.00 34.00L14.72 42.50L14.72 59.50L0.00 68.00L-14.72 59.50ZM-14.72 42.50L0.00 51.00L14.72 42.50M0.00 51.00L0.00 68.00M14.72 42.50L29.44 34.00L44.17 42.50L44.17 59.50L29.44 68.00L14.72 59.50ZM14.72 42.50L29.44 51.00L44.17 42.50M29.44 51.00L29.44 68.00M44.17 42.50L58.89 34.00L73.61 42.50L73.61 59.50L58.89 68.00L44.17 59.50ZM44.17 42.50L58.89 51.00L73.61 42.50M58.89 51.00L58.89 68.00M-29.44 68.00L-14.72 59.50L0.00 68.00L0.00 85.00L-14.72 93.50L-29.44 85.00ZM-29.44 68.00L-14.72 76.50L0.00 68.00M-14.72 76.50L-14.72 93.50M0.00 68.00L14.72 59.50L29.44 68.00L29.44 85.00L14.72 93.50L0.00 85.00ZM0.00 68.00L14.72 76.50L29.44 68.00M14.72 76.50L14.72 93.50M29.44 68.00L44.17 59.50L58.89 68.00L58.89 85.00L44.17 93.50L29.44 85.00ZM29.44 68.00L44.17 76.50L58.89 68.00M44.17 76.50L44.17 93.50M58.89 68.00L73.61 59.50L88.33 68.00L88.33 85.00L73.61 93.50L58.89 85.00ZM58.89 68.00L73.61 76.50L88.33 68.00M73.61 76.50L73.61 93.50" fill="none" stroke="currentColor" stroke-width="1" stroke-linejoin="round"/></pattern></defs><rect width="100%" height="100%" fill="url(#cube)"/></svg>
-  <div class="wrap">
-    <header class="top">
-      <a class="logo" href="#" aria-label="Qonverse home">
-        <svg width="28" height="28" viewBox="0 0 40 40" fill="none" aria-hidden="true"><circle cx="19" cy="19" r="13.5" stroke="var(--box)" stroke-width="5.5"/><path d="M24 31.2 Q28.6 37.2 38 37.6 Q32.6 33.2 31.4 24" fill="var(--box)" stroke="var(--box)" stroke-width="2" stroke-linejoin="round"/></svg><span>onverse</span>
-      </a>
-      <nav class="links" aria-label="Page sections">
-        <a href="#how">How it works</a><a href="#packs">Sample packs</a><a href="#download">Download</a><a href="https://github.com/aadvark/Qonverse">GitHub</a>
-      </nav>
-    </header>
-    <div class="hero-grid">
-      <div>
-        <span class="eyebrow">Free &amp; open source · Android</span>
-        <h1>Learn the phrases <em>your job</em> needs — in any language.</h1>
-        <p class="lead">Front desk, restaurant floor, shop, ward or taxi: make a phrase pack for your work with any AI, then listen, imitate and practise with your phone's own voices.</p>
-        <div class="cta">
-          <a class="btn btn-primary" href="download/Qonverse-0.1.0.apk" download>
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg>
-            Download APK
-          </a>
-          <a class="btn btn-ghost" href="https://github.com/aadvark/Qonverse">View on GitHub</a>
-        </div>
-        <p class="fine">Version 0.1.0 · 1.3 MB · Android 8.0 or newer · No account, no ads, no tracking</p>
+<div class="preview-bar" role="note"><b>Preview release.</b> Qonverse is new and still being tested — expect rough edges. <a href="#preview">What this means</a></div>
+
+<header class="top" id="top">
+  <div class="wrap nav">
+    <a class="logo" href="#" aria-label="Qonverse home">
+      <svg width="28" height="28" viewBox="0 0 40 40" fill="none" aria-hidden="true"><circle cx="19" cy="19" r="13.5" stroke="var(--box-text)" stroke-width="5.5"/><path d="M24 31.2 Q28.6 37.2 38 37.6 Q32.6 33.2 31.4 24" fill="var(--box-text)" stroke="var(--box-text)" stroke-width="2" stroke-linejoin="round"/></svg><span>onverse</span>
+    </a>
+    <nav class="nav-links" aria-label="Main">
+      <a href="#how" class="hide-sm">How it works</a>
+      <a href="#features" class="hide-sm">Features</a>
+      <a href="#packs" class="hide-sm">Packs</a>
+      <a href="#get">Get Qonverse</a>
+      <a class="btn btn-primary btn-sm" href="app/">Launch web app</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+<!-- HERO -->
+<div class="hero walled">
+  <svg class="cubes" aria-hidden="true"><defs><pattern id="cube1" width="29.445" height="51" patternUnits="userSpaceOnUse"><path d="M-29.44 -34.00L-14.72 -42.50L0.00 -34.00L0.00 -17.00L-14.72 -8.50L-29.44 -17.00ZM-29.44 -34.00L-14.72 -25.50L0.00 -34.00M-14.72 -25.50L-14.72 -8.50M0.00 -34.00L14.72 -42.50L29.44 -34.00L29.44 -17.00L14.72 -8.50L0.00 -17.00ZM0.00 -34.00L14.72 -25.50L29.44 -34.00M14.72 -25.50L14.72 -8.50M29.44 -34.00L44.17 -42.50L58.89 -34.00L58.89 -17.00L44.17 -8.50L29.44 -17.00ZM29.44 -34.00L44.17 -25.50L58.89 -34.00M44.17 -25.50L44.17 -8.50M58.89 -34.00L73.61 -42.50L88.33 -34.00L88.33 -17.00L73.61 -8.50L58.89 -17.00ZM58.89 -34.00L73.61 -25.50L88.33 -34.00M73.61 -25.50L73.61 -8.50M-44.17 -8.50L-29.44 -17.00L-14.72 -8.50L-14.72 8.50L-29.44 17.00L-44.17 8.50ZM-44.17 -8.50L-29.44 0.00L-14.72 -8.50M-29.44 0.00L-29.44 17.00M-14.72 -8.50L0.00 -17.00L14.72 -8.50L14.72 8.50L0.00 17.00L-14.72 8.50ZM-14.72 -8.50L0.00 0.00L14.72 -8.50M0.00 0.00L0.00 17.00M14.72 -8.50L29.44 -17.00L44.17 -8.50L44.17 8.50L29.44 17.00L14.72 8.50ZM14.72 -8.50L29.44 0.00L44.17 -8.50M29.44 0.00L29.44 17.00M44.17 -8.50L58.89 -17.00L73.61 -8.50L73.61 8.50L58.89 17.00L44.17 8.50ZM44.17 -8.50L58.89 0.00L73.61 -8.50M58.89 0.00L58.89 17.00M-29.44 17.00L-14.72 8.50L0.00 17.00L0.00 34.00L-14.72 42.50L-29.44 34.00ZM-29.44 17.00L-14.72 25.50L0.00 17.00M-14.72 25.50L-14.72 42.50M0.00 17.00L14.72 8.50L29.44 17.00L29.44 34.00L14.72 42.50L0.00 34.00ZM0.00 17.00L14.72 25.50L29.44 17.00M14.72 25.50L14.72 42.50M29.44 17.00L44.17 8.50L58.89 17.00L58.89 34.00L44.17 42.50L29.44 34.00ZM29.44 17.00L44.17 25.50L58.89 17.00M44.17 25.50L44.17 42.50M58.89 17.00L73.61 8.50L88.33 17.00L88.33 34.00L73.61 42.50L58.89 34.00ZM58.89 17.00L73.61 25.50L88.33 17.00M73.61 25.50L73.61 42.50M-44.17 42.50L-29.44 34.00L-14.72 42.50L-14.72 59.50L-29.44 68.00L-44.17 59.50ZM-44.17 42.50L-29.44 51.00L-14.72 42.50M-29.44 51.00L-29.44 68.00M-14.72 42.50L0.00 34.00L14.72 42.50L14.72 59.50L0.00 68.00L-14.72 59.50ZM-14.72 42.50L0.00 51.00L14.72 42.50M0.00 51.00L0.00 68.00M14.72 42.50L29.44 34.00L44.17 42.50L44.17 59.50L29.44 68.00L14.72 59.50ZM14.72 42.50L29.44 51.00L44.17 42.50M29.44 51.00L29.44 68.00M44.17 42.50L58.89 34.00L73.61 42.50L73.61 59.50L58.89 68.00L44.17 59.50ZM44.17 42.50L58.89 51.00L73.61 42.50M58.89 51.00L58.89 68.00M-29.44 68.00L-14.72 59.50L0.00 68.00L0.00 85.00L-14.72 93.50L-29.44 85.00ZM-29.44 68.00L-14.72 76.50L0.00 68.00M-14.72 76.50L-14.72 93.50M0.00 68.00L14.72 59.50L29.44 68.00L29.44 85.00L14.72 93.50L0.00 85.00ZM0.00 68.00L14.72 76.50L29.44 68.00M14.72 76.50L14.72 93.50M29.44 68.00L44.17 59.50L58.89 68.00L58.89 85.00L44.17 93.50L29.44 85.00ZM29.44 68.00L44.17 76.50L58.89 68.00M44.17 76.50L44.17 93.50M58.89 68.00L73.61 59.50L88.33 68.00L88.33 85.00L73.61 93.50L58.89 85.00ZM58.89 68.00L73.61 76.50L88.33 68.00M73.61 76.50L73.61 93.50" fill="none" stroke="currentColor" stroke-width="1" stroke-linejoin="round"/></pattern></defs><rect width="100%" height="100%" fill="url(#cube1)"/></svg>
+  <div class="wrap hero-grid">
+    <div>
+      <span class="eyebrow"><i><svg width="12" height="12" viewBox="0 0 24 24" fill="#fff" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg></i>Free &amp; open source · Android + web</span>
+      <h1>Speak the phrases your job needs in <span class="rotator" id="rotator" aria-live="off"><span>日本語</span></span></h1>
+      <p class="lead">Front desk, restaurant floor, shop, ward or taxi. Make a phrase pack for your exact job with any AI, then listen, imitate and practise until it feels natural.</p>
+      <div class="cta">
+        <a class="btn btn-primary" href="download/Qonverse-0.2.0.apk" download>
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.6 9.5 19.3 6.6a.4.4 0 0 0-.7-.4l-1.7 3a10.4 10.4 0 0 0-9.8 0l-1.7-3a.4.4 0 1 0-.7.4l1.7 2.9A9.7 9.7 0 0 0 1.5 17h21a9.7 9.7 0 0 0-4.9-7.5ZM7 14.3a1 1 0 1 1 0-2 1 1 0 0 1 0 2Zm10 0a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z"/></svg>
+          <span class="two">Download for Android<small>APK · v0.2.0 · 1.3 MB</small></span>
+        </a>
+        <a class="btn btn-ghost" href="app/">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6" y="2" width="12" height="20" rx="3"/><path d="M11 18h2"/></svg>
+          <span class="two">Launch web app<small>iPhone, iPad &amp; any browser</small></span>
+        </a>
       </div>
-      <div class="phones">
-        <div class="phone"><img src="img/03-phrase.webp" width="540" height="1169" alt="Phrase screen showing ご予約のお名前 with romaji, meaning, an example sentence and a big play button"></div>
-        <div class="phone lift"><img src="img/04-practice.webp" width="540" height="1169" alt="Chat-style review: the guest asks where breakfast is and you pick the right phrase"></div>
-      </div>
+      <p class="fine">Preview · No account, no ads, no tracking · Apache 2.0</p>
+    </div>
+    <div class="stage" aria-hidden="true">
+      <div class="phone a"><img src="img/03-phrase.webp" width="540" height="1169" alt=""></div>
+      <div class="phone b"><img src="img/04-practice.webp" width="540" height="1169" alt=""></div>
+      <div class="bubble b1"><b lang="ja">ご予約のお名前</b><span>go-yoyaku no o-namae · the name on your booking</span></div>
+      <div class="bubble mine b2"><b lang="ko">잠시만 기다려 주십시오</b><span>jamsiman gidaryeo jusipsio · please wait</span></div>
+      <div class="bubble b3"><b lang="th">เชิญทางนี้</b><span>choen thang ni · this way, please</span></div>
+      <div class="play-chip"><svg width="26" height="26" viewBox="0 0 24 24" fill="var(--audio-ink)"><path d="M8 5v14l11-7z"/></svg></div>
     </div>
   </div>
 </div>
 
-<section id="how">
+<!-- LANGUAGE MARQUEE -->
+<div class="marquee" aria-label="Welcome in many languages">
+  <div class="track"><span class="item"><span>いらっしゃいませ</span><small>Japanese</small></span><span class="dot" aria-hidden="true">●</span><span class="item"><span>欢迎光临</span><small>Mandarin</small></span><span class="dot" aria-hidden="true">●</span><span class="item"><span>어서 오세요</span><small>Korean</small></span><span class="dot" aria-hidden="true">●</span><span class="item"><span>สวัสดีค่ะ</span><small>Thai</small></span><span class="dot" aria-hidden="true">●</span><span class="item"><span>Xin chào quý khách</span><small>Vietnamese</small></span><span class="dot" aria-hidden="true">●</span><span class="item"><span>Selamat datang</span><small>Malay</small></span><span class="dot" aria-hidden="true">●</span><span class="item"><span>歡迎光臨</span><small>Cantonese</small></span><span class="dot" aria-hidden="true">●</span><span class="item"><span>Maligayang pagdating</span><small>Tagalog</small></span><span class="dot" aria-hidden="true">●</span><span class="item"><span>स्वागत है</span><small>Hindi</small></span><span class="dot" aria-hidden="true">●</span><span class="item"><span>வரவேற்கிறோம்</span><small>Tamil</small></span><span class="dot" aria-hidden="true">●</span><span class="item"><span>Bienvenido</span><small>Spanish</small></span><span class="dot" aria-hidden="true">●</span><span class="item"><span>Bienvenue</span><small>French</small></span><span class="dot" aria-hidden="true">●</span><span class="item"><span>Willkommen</span><small>German</small></span><span class="dot" aria-hidden="true">●</span><span class="item"><span>أهلاً وسهلاً</span><small>Arabic</small></span><span class="dot" aria-hidden="true">●</span><span class="item" aria-hidden="true"><span>いらっしゃいませ</span><small>Japanese</small></span><span class="dot" aria-hidden="true">●</span><span class="item" aria-hidden="true"><span>欢迎光临</span><small>Mandarin</small></span><span class="dot" aria-hidden="true">●</span><span class="item" aria-hidden="true"><span>어서 오세요</span><small>Korean</small></span><span class="dot" aria-hidden="true">●</span><span class="item" aria-hidden="true"><span>สวัสดีค่ะ</span><small>Thai</small></span><span class="dot" aria-hidden="true">●</span><span class="item" aria-hidden="true"><span>Xin chào quý khách</span><small>Vietnamese</small></span><span class="dot" aria-hidden="true">●</span><span class="item" aria-hidden="true"><span>Selamat datang</span><small>Malay</small></span><span class="dot" aria-hidden="true">●</span><span class="item" aria-hidden="true"><span>歡迎光臨</span><small>Cantonese</small></span><span class="dot" aria-hidden="true">●</span><span class="item" aria-hidden="true"><span>Maligayang pagdating</span><small>Tagalog</small></span><span class="dot" aria-hidden="true">●</span><span class="item" aria-hidden="true"><span>स्वागत है</span><small>Hindi</small></span><span class="dot" aria-hidden="true">●</span><span class="item" aria-hidden="true"><span>வரவேற்கிறோம்</span><small>Tamil</small></span><span class="dot" aria-hidden="true">●</span><span class="item" aria-hidden="true"><span>Bienvenido</span><small>Spanish</small></span><span class="dot" aria-hidden="true">●</span><span class="item" aria-hidden="true"><span>Bienvenue</span><small>French</small></span><span class="dot" aria-hidden="true">●</span><span class="item" aria-hidden="true"><span>Willkommen</span><small>German</small></span><span class="dot" aria-hidden="true">●</span><span class="item" aria-hidden="true"><span>أهلاً وسهلاً</span><small>Arabic</small></span><span class="dot" aria-hidden="true">●</span></div>
+</div>
+
+<!-- HOW -->
+<section id="how" class="walled">
+  <svg class="cubes" aria-hidden="true"><defs><pattern id="cube2" width="29.445" height="51" patternUnits="userSpaceOnUse"><path d="M-29.44 -34.00L-14.72 -42.50L0.00 -34.00L0.00 -17.00L-14.72 -8.50L-29.44 -17.00ZM-29.44 -34.00L-14.72 -25.50L0.00 -34.00M-14.72 -25.50L-14.72 -8.50M0.00 -34.00L14.72 -42.50L29.44 -34.00L29.44 -17.00L14.72 -8.50L0.00 -17.00ZM0.00 -34.00L14.72 -25.50L29.44 -34.00M14.72 -25.50L14.72 -8.50M29.44 -34.00L44.17 -42.50L58.89 -34.00L58.89 -17.00L44.17 -8.50L29.44 -17.00ZM29.44 -34.00L44.17 -25.50L58.89 -34.00M44.17 -25.50L44.17 -8.50M58.89 -34.00L73.61 -42.50L88.33 -34.00L88.33 -17.00L73.61 -8.50L58.89 -17.00ZM58.89 -34.00L73.61 -25.50L88.33 -34.00M73.61 -25.50L73.61 -8.50M-44.17 -8.50L-29.44 -17.00L-14.72 -8.50L-14.72 8.50L-29.44 17.00L-44.17 8.50ZM-44.17 -8.50L-29.44 0.00L-14.72 -8.50M-29.44 0.00L-29.44 17.00M-14.72 -8.50L0.00 -17.00L14.72 -8.50L14.72 8.50L0.00 17.00L-14.72 8.50ZM-14.72 -8.50L0.00 0.00L14.72 -8.50M0.00 0.00L0.00 17.00M14.72 -8.50L29.44 -17.00L44.17 -8.50L44.17 8.50L29.44 17.00L14.72 8.50ZM14.72 -8.50L29.44 0.00L44.17 -8.50M29.44 0.00L29.44 17.00M44.17 -8.50L58.89 -17.00L73.61 -8.50L73.61 8.50L58.89 17.00L44.17 8.50ZM44.17 -8.50L58.89 0.00L73.61 -8.50M58.89 0.00L58.89 17.00M-29.44 17.00L-14.72 8.50L0.00 17.00L0.00 34.00L-14.72 42.50L-29.44 34.00ZM-29.44 17.00L-14.72 25.50L0.00 17.00M-14.72 25.50L-14.72 42.50M0.00 17.00L14.72 8.50L29.44 17.00L29.44 34.00L14.72 42.50L0.00 34.00ZM0.00 17.00L14.72 25.50L29.44 17.00M14.72 25.50L14.72 42.50M29.44 17.00L44.17 8.50L58.89 17.00L58.89 34.00L44.17 42.50L29.44 34.00ZM29.44 17.00L44.17 25.50L58.89 17.00M44.17 25.50L44.17 42.50M58.89 17.00L73.61 8.50L88.33 17.00L88.33 34.00L73.61 42.50L58.89 34.00ZM58.89 17.00L73.61 25.50L88.33 17.00M73.61 25.50L73.61 42.50M-44.17 42.50L-29.44 34.00L-14.72 42.50L-14.72 59.50L-29.44 68.00L-44.17 59.50ZM-44.17 42.50L-29.44 51.00L-14.72 42.50M-29.44 51.00L-29.44 68.00M-14.72 42.50L0.00 34.00L14.72 42.50L14.72 59.50L0.00 68.00L-14.72 59.50ZM-14.72 42.50L0.00 51.00L14.72 42.50M0.00 51.00L0.00 68.00M14.72 42.50L29.44 34.00L44.17 42.50L44.17 59.50L29.44 68.00L14.72 59.50ZM14.72 42.50L29.44 51.00L44.17 42.50M29.44 51.00L29.44 68.00M44.17 42.50L58.89 34.00L73.61 42.50L73.61 59.50L58.89 68.00L44.17 59.50ZM44.17 42.50L58.89 51.00L73.61 42.50M58.89 51.00L58.89 68.00M-29.44 68.00L-14.72 59.50L0.00 68.00L0.00 85.00L-14.72 93.50L-29.44 85.00ZM-29.44 68.00L-14.72 76.50L0.00 68.00M-14.72 76.50L-14.72 93.50M0.00 68.00L14.72 59.50L29.44 68.00L29.44 85.00L14.72 93.50L0.00 85.00ZM0.00 68.00L14.72 76.50L29.44 68.00M14.72 76.50L14.72 93.50M29.44 68.00L44.17 59.50L58.89 68.00L58.89 85.00L44.17 93.50L29.44 85.00ZM29.44 68.00L44.17 76.50L58.89 68.00M44.17 76.50L44.17 93.50M58.89 68.00L73.61 59.50L88.33 68.00L88.33 85.00L73.61 93.50L58.89 85.00ZM58.89 68.00L73.61 76.50L88.33 68.00M73.61 76.50L73.61 93.50" fill="none" stroke="currentColor" stroke-width="1" stroke-linejoin="round"/></pattern></defs><rect width="100%" height="100%" fill="url(#cube2)"/></svg>
   <div class="wrap">
-    <h2 class="sec-title">How it works</h2>
-    <p class="sec-lead">Qonverse doesn't run any AI itself. You use the AI you already like to write a pack for your exact job, and Qonverse turns it into lessons with sound.</p>
+    <div class="center reveal"><div class="kicker">How it works</div><h2 class="sec-title">Your job, your language, three steps</h2>
+      <p class="sec-lead">Qonverse doesn't run any AI itself. You use the AI you already like to write a pack for your exact work, and Qonverse turns it into lessons with sound.</p></div>
     <div class="steps">
-      <div class="card"><div class="num">1</div><h3>Copy our prompt</h3><p>Paste it into Claude, ChatGPT, Gemini or any AI chat. It asks about your job, the language and the situations you face.</p></div>
-      <div class="card"><div class="num">2</div><h3>Get your pack</h3><p>The AI writes short phrases with transliteration, meaning, an example sentence, a mini conversation and the replies you'll hear.</p></div>
-      <div class="card"><div class="num">3</div><h3>Paste it into Qonverse</h3><p>Listen at normal or slow speed, loop it, imitate it, then practise in a chat with a guest until each phrase feels familiar.</p></div>
+      <div class="step reveal"><span class="n">1</span><div class="ic"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="8" y="8" width="13" height="13" rx="2"/><path d="M4 16V5a2 2 0 0 1 2-2h11"/></svg></div><h3>Copy our prompt</h3><p>Paste it into Claude, ChatGPT, Gemini or any AI chat. It asks about your job, the language and the moments you face at work.</p></div>
+      <div class="step reveal" style="transition-delay:.12s"><span class="n">2</span><div class="ic"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 4.6L18.5 9l-4.6 1.9L12 15.5l-1.9-4.6L5.5 9l4.6-1.4z"/><path d="M19 15l.8 2 2 .8-2 .8-.8 2-.8-2-2-.8 2-.8z"/></svg></div><h3>Get your pack</h3><p>Short phrases with transliteration and meaning, an example sentence, a mini conversation and the replies you're likely to hear.</p></div>
+      <div class="step reveal" style="transition-delay:.24s"><span class="n">3</span><div class="ic"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6 9H2v6h4l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7M19 5a10 10 0 0 1 0 14"/></svg></div><h3>Listen, imitate, practise</h3><p>Paste it into Qonverse. Play it normal or slow, loop it, repeat it, then practise in a chat with a guest.</p></div>
     </div>
-    <div class="prompt-box">
-      <p>The prompt is open source too. Copy it now, or open it on GitHub.</p>
-      <div class="cta">
-        <button class="btn btn-primary" id="copy" type="button">Copy the prompt</button>
-        <a class="btn btn-ghost" href="https://github.com/aadvark/Qonverse/blob/main/prompts/pack-generator-prompt.md">Open on GitHub</a>
+    <div class="prompt-strip reveal">
+      <p>The pack prompt is open source too. Copy it, paste it into your AI, and you'll have your first pack in minutes.</p>
+      <div class="cta"><button class="btn btn-light" id="copy" type="button">Copy the prompt</button><a class="btn btn-ghost" href="prompt.md">View prompt</a></div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES CAROUSEL -->
+<section id="features" style="background:var(--bg2)">
+  <div class="wrap">
+    <div class="center reveal"><div class="kicker">Features</div><h2 class="sec-title">Made for busy shifts</h2><p class="sec-lead">Short sessions, big buttons, sound first — and nothing to sign up for.</p></div>
+    <div class="carousel reveal" id="carousel" aria-roledescription="carousel" aria-label="Qonverse features">
+      <div class="slides" aria-live="polite"><div class="slide on" id="slide-listen" role="tabpanel" aria-roledescription="slide" aria-label="1 of 6: Listen and imitate"><div><div class="ic audio"><svg width="30" height="30" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg></div><h3>Listen and imitate</h3><p>Hear every phrase, sentence and reply in a natural voice, then say it back until it sticks.</p><ul><li>Normal, slow (0.6×) and loop ×3 playback</li><li>A big play button, easy to hit between guests</li><li>Every line of every conversation can be played</li></ul></div><div class="shot"><img src="img/03-phrase.webp" width="540" height="1169" alt="Phrase screen with play controls" loading="lazy"></div></div>
+        <div class="slide" id="slide-chat" role="tabpanel" aria-roledescription="slide" aria-label="2 of 6: Practise as a chat"><div><div class="ic box"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z"/><path d="M8.5 11h.01M12 11h.01M15.5 11h.01"/></svg></div><h3>Practise as a chat</h3><p>The guest says something; you tap the phrase you need. Get it right and it&#x27;s spoken back for you to copy.</p><ul><li>Real situations from your own job</li><li>Speech-bubble chat, just like a messaging app</li><li>Phrases you know are marked familiar</li></ul></div><div class="shot"><img src="img/04-practice.webp" width="540" height="1169" alt="Chat-style review screen" loading="lazy"></div></div>
+        <div class="slide" id="slide-ai" role="tabpanel" aria-roledescription="slide" aria-label="3 of 6: Made by your AI, for your job"><div><div class="ic box"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 4.6L18.5 9l-4.6 1.9L12 15.5l-1.9-4.6L5.5 9l4.6-1.4z"/><path d="M19 15l.8 2 2 .8-2 .8-.8 2-.8-2-2-.8 2-.8z"/></svg></div><h3>Made by your AI, for your job</h3><p>Copy one prompt into any AI chat. It interviews you and writes a pack for your exact role and guests.</p><ul><li>Works with Claude, ChatGPT, Gemini and more</li><li>Paste it in, or import a file from a colleague</li><li>Packs sent in parts are joined automatically</li></ul></div><div class="shot"><img src="img/05-add.webp" width="540" height="1169" alt="Add a pack screen" loading="lazy"></div></div>
+        <div class="slide" id="slide-read" role="tabpanel" aria-roledescription="slide" aria-label="4 of 6: Read it even if you can&#x27;t read it"><div><div class="ic box"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h10M9 4v3M6 7c1 4 4 7 8 8M13 7c-1 4-4 7-8 8M14 20l3.5-8 3.5 8M15 17.5h5"/></svg></div><h3>Read it even if you can&#x27;t read it</h3><p>Japanese, Chinese, Korean, Thai and other scripts always come with English-letter transliteration and meaning.</p><ul><li>Romaji, pinyin, Korean and Thai romanisation</li><li>Short phrases, not grammar lessons</li><li>Each phrase shown in a full sentence</li></ul></div><div class="shot"><img src="img/02-pack.webp" width="540" height="1169" alt="Pack screen with scenarios in Japanese and romaji" loading="lazy"></div></div>
+        <div class="slide" id="slide-voices" role="tabpanel" aria-roledescription="slide" aria-label="5 of 6: Your phone&#x27;s own voices"><div><div class="ic audio"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M3 18v-6a9 9 0 0 1 18 0v6"/><path d="M21 19a2 2 0 0 1-2 2h-1v-6h3zM3 19a2 2 0 0 0 2 2h1v-6H3z"/></svg></div><h3>Your phone&#x27;s own voices</h3><p>Uses the free speech voices already on your phone or computer, with up to four voices per language.</p><ul><li>Works offline once voices are downloaded</li><li>Choose a voice for each language</li><li>Adjust normal and slow speed</li></ul></div><div class="shot"><img src="img/06-settings.webp" width="540" height="1169" alt="Settings screen with voices and speed" loading="lazy"></div></div>
+        <div class="slide" id="slide-themes" role="tabpanel" aria-roledescription="slide" aria-label="6 of 6: Day, dark and AMOLED"><div><div class="ic box"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></div><h3>Day, dark and AMOLED</h3><p>Calm violet by day, soft indigo at night, and true black to save battery on OLED screens.</p><ul><li>Gentle colours that are easy on the eyes</li><li>Follows your phone&#x27;s setting on Auto</li><li>Isometric cube wallpaper throughout</li></ul></div><div class="shot"><img src="img/07-home-dark.webp" width="540" height="1169" alt="Home screen in dark mode" loading="lazy"></div></div></div>
+      <div class="car-nav">
+        <div class="tabs" role="tablist" aria-label="Choose a feature"><button class="tab" role="tab" aria-controls="slide-listen" aria-selected="true">Listen<span class="fill"></span></button><button class="tab" role="tab" aria-controls="slide-chat" aria-selected="false">Chat practice<span class="fill"></span></button><button class="tab" role="tab" aria-controls="slide-ai" aria-selected="false">Your AI<span class="fill"></span></button><button class="tab" role="tab" aria-controls="slide-read" aria-selected="false">Transliteration<span class="fill"></span></button><button class="tab" role="tab" aria-controls="slide-voices" aria-selected="false">Voices<span class="fill"></span></button><button class="tab" role="tab" aria-controls="slide-themes" aria-selected="false">Themes<span class="fill"></span></button></div>
+        <div class="arrows">
+          <button class="arrow" id="prev" aria-label="Previous feature"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg></button>
+          <button class="arrow" id="pause" aria-label="Pause rotation"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" id="pauseIc"><rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/></svg></button>
+          <button class="arrow" id="next" aria-label="Next feature"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></button>
+        </div>
       </div>
     </div>
-    <details><summary>Read the prompt</summary><pre id="prompt"># Qonverse — Scenario Pack Generator Prompt (v1.2)
-
-Paste everything below the line into any AI chat (Claude, ChatGPT, Gemini, a local model). The AI will interview you, confirm your choices, then output a scenario pack. Copy that pack and paste it into the Qonverse app.
-
----
-
-You are the **Qonverse Pack Builder**. Qonverse is an open source app that helps working people learn the short spoken phrases they need for their job in another language. The app shows each phrase with its English-letter transliteration and meaning, reads it aloud with text-to-speech so the learner can imitate it, shows it used in a full sentence, and gives a real example of when to use it.
-
-Your job has two phases. Do not skip or merge them.
-
-## PHASE 1 — Interview
-
-Ask the questions below to understand what the learner needs. Rules:
-- Ask **one or two questions at a time**, in plain friendly language. Never dump the whole list at once.
-- Offer short examples or choices so the learner can answer quickly.
-- If an answer is vague, ask one follow-up. If the learner says &quot;you decide&quot;, choose a sensible default and say what you picked.
-- Skip any question the learner has already answered.
-
-Find out:
-1. **Industry and role.** For example: hotel front office, F&amp;B server, retail sales, nurse, tour guide, taxi driver.
-2. **Target language** they want to learn, plus any **region or dialect**. For example: Japanese, Mandarin (Mainland or Taiwan), Spanish (Spain or Mexico), Cantonese, Thai, Vietnamese, Korean.
-3. **Their own language**, which is the language for meanings and notes.
-4. **Who they speak to**: guests, customers, patients, colleagues, a boss. This decides the politeness level.
-5. **Politeness level**: very formal, polite, or casual. Recommend one based on answer 4.
-6. **Current level** in the target language: none, beginner, or some basics.
-7. **Scenarios** they need. Suggest 6–10 typical situations for their role and let them add, remove or reorder. For a hotel front office, suggest things like check-in, check-out, room problems, directions, recommendations, payment, phone reservations, and lost and found.
-8. **Phrases per scenario.** Default 10, maximum 15.
-9. **Anything specific** to their workplace, such as local landmarks, the hotel&#x27;s own services, or common guest nationalities.
-
-Do not ask whether they want transliteration: it is always included for languages that are not written in Latin letters.
-
-When you have enough, show a **short summary** of all choices and ask: &quot;Shall I generate your pack?&quot; Only continue when they confirm.
-
-## PHASE 2 — Generate the pack
-
-Output **only** a single JSON code block that follows the schema below exactly, with no commentary before or after it. If the pack is too long for one reply, split it by scenario: say &quot;Part 1 of N&quot;, output valid JSON containing only those scenarios (same `pack` header each time), and wait for the learner to say &quot;next&quot;.
-
-### What counts as a phrase
-A phrase is a **short, reusable chunk, not a full sentence**: usually 1–6 words, the building block a worker slots into many sentences. For example:
-- Good phrases: ご予約のお名前 (go-yoyaku no o-namae, &quot;the name on your booking&quot;), 少々お待ちください (shōshō omachi kudasai, &quot;one moment, please&quot;), お会計 (o-kaikei, &quot;the bill&quot;), こちらでございます (kochira de gozaimasu, &quot;here it is&quot;).
-- Not phrases: いらっしゃいませ。ご予約のお名前をお願いいたします。 That is a whole sentence. Put it in `in_a_sentence` instead.
-
-Fixed polite expressions that are short and used whole (like 少々お待ちください) count as phrases.
-
-### Transliteration and meaning — always together
-If the target language is **not written in Latin letters** (for example Japanese, Chinese, Cantonese, Korean, Thai, Khmer, Burmese, Hindi, Tamil, Arabic, Russian), then **every** piece of target-language text in the pack must come with both:
-- `romanization`: an English-letter transliteration a learner can read aloud, and
-- `meaning`: what it means in the learner&#x27;s language.
-
-This applies to the phrase itself, `in_a_sentence`, every `variants` entry, every `example.dialogue` line, every `likely_responses` entry, and the scenario title (`title_target` with `title_romanization`). Never leave a line of foreign script without its transliteration and meaning.
-
-Use one standard system for the whole pack and name it in `romanization_system`:
-- Japanese: Hepburn (with macrons, e.g. ō)
-- Mandarin: Hanyu Pinyin with tone marks (e.g. nín hǎo)
-- Cantonese: Jyutping with tone numbers (e.g. nei5 hou2)
-- Korean: Revised Romanization (e.g. annyeonghaseyo)
-- Thai: Royal Thai General System, plus tone marks in `notes` where tone changes meaning
-- Others: the most widely used standard for that language
-
-For languages written in Latin letters (for example Vietnamese, Malay, Indonesian, Tagalog, Spanish), leave `romanization` empty, because the text can already be read. Still give `meaning` everywhere.
-
-### Content rules
-- **Phrases, not sentences.** The `text` field holds only the short phrase. Every phrase must also have `in_a_sentence`, one natural full sentence that uses the phrase exactly as written.
-- **Native and natural.** Choose what a skilled native-speaking professional in that role would actually say, not a textbook or literal translation.
-- **Correct politeness.** Match the chosen level consistently. Flag any phrase that is more casual or more formal than usual in its `notes`.
-- **Speakable text.** `text` and every sentence field must be clean for text-to-speech: no brackets, slashes, transliteration, alternatives or notes inside them. Put alternatives in `variants` and transliteration in `romanization`.
-- **Reusable patterns.** Where a phrase has a swappable slot, show it with `{curly braces}` in `pattern` (for example `{number}階`), and give a filled-in version in `text`.
-- **Real context.** Every phrase needs `when_to_use` and an `example`: a realistic moment at work and a 2–4 line mini dialogue in full sentences. At least one of the learner&#x27;s lines must contain the phrase; mark that line with `&quot;uses_phrase&quot;: true`.
-- **Understand the reply.** Give 1–3 `likely_responses` the other person might say, so the learner can understand the answer.
-- **Correct language codes.** Use BCP-47 tags the phone&#x27;s text-to-speech understands (for example `ja-JP`, `zh-CN`, `zh-TW`, `yue-HK`, `ko-KR`, `th-TH`, `vi-VN`, `es-MX`).
-- **Unique IDs.** Lowercase, hyphenated, unique within the pack.
-- Do not invent facts about the learner&#x27;s real workplace beyond what they told you.
-
-### Schema
-
-```json
-{
-  &quot;qonverse_pack_version&quot;: &quot;1.2&quot;,
-  &quot;pack&quot;: {
-    &quot;id&quot;: &quot;hotel-front-office-ja&quot;,
-    &quot;title&quot;: &quot;Hotel Front Office — Japanese&quot;,
-    &quot;description&quot;: &quot;Polite Japanese phrases for front desk staff serving hotel guests.&quot;,
-    &quot;industry&quot;: &quot;Hospitality&quot;,
-    &quot;role&quot;: &quot;Front office agent&quot;,
-    &quot;audience&quot;: &quot;Hotel guests&quot;,
-    &quot;learner_language&quot;: &quot;en&quot;,
-    &quot;target_language&quot;: &quot;ja-JP&quot;,
-    &quot;romanization_system&quot;: &quot;Hepburn&quot;,
-    &quot;politeness&quot;: &quot;very formal&quot;,
-    &quot;level&quot;: &quot;beginner&quot;,
-    &quot;generated_by&quot;: &quot;AI model name if known&quot;,
-    &quot;created&quot;: &quot;YYYY-MM-DD&quot;
-  },
-  &quot;scenarios&quot;: [
-    {
-      &quot;id&quot;: &quot;check-in&quot;,
-      &quot;title&quot;: &quot;Check-in&quot;,
-      &quot;title_target&quot;: &quot;チェックイン&quot;,
-      &quot;title_romanization&quot;: &quot;chekku-in&quot;,
-      &quot;context&quot;: &quot;Greeting arriving guests and finding their booking.&quot;,
-      &quot;phrases&quot;: [
-        {
-          &quot;id&quot;: &quot;check-in-01&quot;,
-          &quot;text&quot;: &quot;ご予約のお名前&quot;,
-          &quot;romanization&quot;: &quot;go-yoyaku no o-namae&quot;,
-          &quot;meaning&quot;: &quot;the name on your booking&quot;,
-          &quot;literal&quot;: &quot;(honorific) booking&#x27;s (honorific) name&quot;,
-          &quot;pattern&quot;: &quot;&quot;,
-          &quot;variants&quot;: [
-            { &quot;text&quot;: &quot;お名前&quot;, &quot;romanization&quot;: &quot;o-namae&quot;, &quot;meaning&quot;: &quot;your name&quot; }
-          ],
-          &quot;politeness&quot;: &quot;very formal&quot;,
-          &quot;in_a_sentence&quot;: {
-            &quot;text&quot;: &quot;ご予約のお名前をお願いいたします。&quot;,
-            &quot;romanization&quot;: &quot;Go-yoyaku no o-namae o onegai itashimasu.&quot;,
-            &quot;meaning&quot;: &quot;May I have the name on your booking, please?&quot;
-          },
-          &quot;when_to_use&quot;: &quot;When a guest arrives to check in and you need to find their reservation.&quot;,
-          &quot;notes&quot;: &quot;The extra ご and お make it very polite. Say it with a slight bow.&quot;,
-          &quot;example&quot;: {
-            &quot;setting&quot;: &quot;A guest walks up to the front desk with their luggage.&quot;,
-            &quot;dialogue&quot;: [
-              { &quot;speaker&quot;: &quot;you&quot;, &quot;uses_phrase&quot;: true, &quot;text&quot;: &quot;いらっしゃいませ。ご予約のお名前をお願いいたします。&quot;, &quot;romanization&quot;: &quot;Irasshaimase. Go-yoyaku no o-namae o onegai itashimasu.&quot;, &quot;meaning&quot;: &quot;Welcome. May I have the name on your booking?&quot; },
-              { &quot;speaker&quot;: &quot;guest&quot;, &quot;text&quot;: &quot;田中です。&quot;, &quot;romanization&quot;: &quot;Tanaka desu.&quot;, &quot;meaning&quot;: &quot;It&#x27;s Tanaka.&quot; },
-              { &quot;speaker&quot;: &quot;you&quot;, &quot;text&quot;: &quot;田中様ですね。少々お待ちくださいませ。&quot;, &quot;romanization&quot;: &quot;Tanaka-sama desu ne. Shōshō omachi kudasaimase.&quot;, &quot;meaning&quot;: &quot;Mr/Ms Tanaka. One moment, please.&quot; }
-            ]
-          },
-          &quot;likely_responses&quot;: [
-            { &quot;text&quot;: &quot;予約はしていません。&quot;, &quot;romanization&quot;: &quot;Yoyaku wa shite imasen.&quot;, &quot;meaning&quot;: &quot;I don&#x27;t have a booking.&quot; },
-            { &quot;text&quot;: &quot;会社の名前で予約しました。&quot;, &quot;romanization&quot;: &quot;Kaisha no namae de yoyaku shimashita.&quot;, &quot;meaning&quot;: &quot;I booked under my company&#x27;s name.&quot; }
-          ]
-        }
-      ]
-    }
-  ]
-}
-```
-
-### Field reference
-| Field | Required | Notes |
-|---|---|---|
-| `text` | Yes | The short phrase only (usually 1–6 words). Exactly what text-to-speech reads aloud. |
-| `romanization` | Yes, for non-Latin scripts | English-letter transliteration. One system for the whole pack. Empty for Latin-script languages. |
-| `meaning` | Yes | Natural meaning in the learner&#x27;s language. Required on every piece of target-language text. |
-| `literal` | Optional | Word-for-word meaning, when it helps understanding. |
-| `pattern` | Optional | Reusable template with `{slots}`, e.g. `{number}階`. |
-| `variants` | Optional | Alternative wordings, each `{text, romanization, meaning}`. |
-| `politeness` | Yes | `very formal`, `polite` or `casual`. |
-| `in_a_sentence` | Yes | One full sentence using the phrase exactly as written: `{text, romanization, meaning}`. |
-| `when_to_use` | Yes | One sentence on the real-work moment. |
-| `notes` | Optional | Cultural tips, tones, pronunciation traps, gestures. |
-| `example.dialogue[]` | Yes | 2–4 lines in full sentences, each `{speaker, text, romanization, meaning}`. `speaker` is `you`, `guest`, `customer`, `patient`, `colleague`, or the audience term chosen. Mark the line(s) that contain the phrase with `&quot;uses_phrase&quot;: true`. |
-| `likely_responses` | Yes | 1–3 replies the learner should recognise, each `{text, romanization, meaning}`. |
-| `title_target`, `title_romanization` | Yes | Scenario name in the target language and its transliteration. |
-
-Start now with Phase 1. Greet the learner in one sentence and ask your first question.
-</pre></details>
   </div>
 </section>
 
-<section>
+<!-- WHO -->
+<section class="walled">
+  <svg class="cubes" aria-hidden="true"><defs><pattern id="cube3" width="29.445" height="51" patternUnits="userSpaceOnUse"><path d="M-29.44 -34.00L-14.72 -42.50L0.00 -34.00L0.00 -17.00L-14.72 -8.50L-29.44 -17.00ZM-29.44 -34.00L-14.72 -25.50L0.00 -34.00M-14.72 -25.50L-14.72 -8.50M0.00 -34.00L14.72 -42.50L29.44 -34.00L29.44 -17.00L14.72 -8.50L0.00 -17.00ZM0.00 -34.00L14.72 -25.50L29.44 -34.00M14.72 -25.50L14.72 -8.50M29.44 -34.00L44.17 -42.50L58.89 -34.00L58.89 -17.00L44.17 -8.50L29.44 -17.00ZM29.44 -34.00L44.17 -25.50L58.89 -34.00M44.17 -25.50L44.17 -8.50M58.89 -34.00L73.61 -42.50L88.33 -34.00L88.33 -17.00L73.61 -8.50L58.89 -17.00ZM58.89 -34.00L73.61 -25.50L88.33 -34.00M73.61 -25.50L73.61 -8.50M-44.17 -8.50L-29.44 -17.00L-14.72 -8.50L-14.72 8.50L-29.44 17.00L-44.17 8.50ZM-44.17 -8.50L-29.44 0.00L-14.72 -8.50M-29.44 0.00L-29.44 17.00M-14.72 -8.50L0.00 -17.00L14.72 -8.50L14.72 8.50L0.00 17.00L-14.72 8.50ZM-14.72 -8.50L0.00 0.00L14.72 -8.50M0.00 0.00L0.00 17.00M14.72 -8.50L29.44 -17.00L44.17 -8.50L44.17 8.50L29.44 17.00L14.72 8.50ZM14.72 -8.50L29.44 0.00L44.17 -8.50M29.44 0.00L29.44 17.00M44.17 -8.50L58.89 -17.00L73.61 -8.50L73.61 8.50L58.89 17.00L44.17 8.50ZM44.17 -8.50L58.89 0.00L73.61 -8.50M58.89 0.00L58.89 17.00M-29.44 17.00L-14.72 8.50L0.00 17.00L0.00 34.00L-14.72 42.50L-29.44 34.00ZM-29.44 17.00L-14.72 25.50L0.00 17.00M-14.72 25.50L-14.72 42.50M0.00 17.00L14.72 8.50L29.44 17.00L29.44 34.00L14.72 42.50L0.00 34.00ZM0.00 17.00L14.72 25.50L29.44 17.00M14.72 25.50L14.72 42.50M29.44 17.00L44.17 8.50L58.89 17.00L58.89 34.00L44.17 42.50L29.44 34.00ZM29.44 17.00L44.17 25.50L58.89 17.00M44.17 25.50L44.17 42.50M58.89 17.00L73.61 8.50L88.33 17.00L88.33 34.00L73.61 42.50L58.89 34.00ZM58.89 17.00L73.61 25.50L88.33 17.00M73.61 25.50L73.61 42.50M-44.17 42.50L-29.44 34.00L-14.72 42.50L-14.72 59.50L-29.44 68.00L-44.17 59.50ZM-44.17 42.50L-29.44 51.00L-14.72 42.50M-29.44 51.00L-29.44 68.00M-14.72 42.50L0.00 34.00L14.72 42.50L14.72 59.50L0.00 68.00L-14.72 59.50ZM-14.72 42.50L0.00 51.00L14.72 42.50M0.00 51.00L0.00 68.00M14.72 42.50L29.44 34.00L44.17 42.50L44.17 59.50L29.44 68.00L14.72 59.50ZM14.72 42.50L29.44 51.00L44.17 42.50M29.44 51.00L29.44 68.00M44.17 42.50L58.89 34.00L73.61 42.50L73.61 59.50L58.89 68.00L44.17 59.50ZM44.17 42.50L58.89 51.00L73.61 42.50M58.89 51.00L58.89 68.00M-29.44 68.00L-14.72 59.50L0.00 68.00L0.00 85.00L-14.72 93.50L-29.44 85.00ZM-29.44 68.00L-14.72 76.50L0.00 68.00M-14.72 76.50L-14.72 93.50M0.00 68.00L14.72 59.50L29.44 68.00L29.44 85.00L14.72 93.50L0.00 85.00ZM0.00 68.00L14.72 76.50L29.44 68.00M14.72 76.50L14.72 93.50M29.44 68.00L44.17 59.50L58.89 68.00L58.89 85.00L44.17 93.50L29.44 85.00ZM29.44 68.00L44.17 76.50L58.89 68.00M44.17 76.50L44.17 93.50M58.89 68.00L73.61 59.50L88.33 68.00L88.33 85.00L73.61 93.50L58.89 85.00ZM58.89 68.00L73.61 76.50L88.33 68.00M73.61 76.50L73.61 93.50" fill="none" stroke="currentColor" stroke-width="1" stroke-linejoin="round"/></pattern></defs><rect width="100%" height="100%" fill="url(#cube3)"/></svg>
   <div class="wrap">
-    <h2 class="sec-title">Made for busy shifts</h2>
-    <p class="sec-lead">Short sessions, big buttons, and sound first.</p>
-    <div class="features">
-      <div class="card feat"><div class="ico audio"><svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg></div><h3>Listen and imitate</h3><p>Every phrase, sentence and reply can be played. Slow it to 0.6× or loop it three times while you repeat.</p></div>
-      <div class="card feat"><div class="ico box"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 6h16M4 12h10M4 18h7"/></svg></div><h3>Phrases, not grammar</h3><p>Short reusable chunks like “the name on your booking”, each shown in a full sentence and a real conversation.</p></div>
-      <div class="card feat"><div class="ico box"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h10M9 4v3M6 7c1 4 4 7 8 8M13 7c-1 4-4 7-8 8M14 20l3.5-8 3.5 8M15 17.5h5"/></svg></div><h3>Read it even if you can't read it</h3><p>Japanese, Chinese, Korean, Thai and other scripts always come with English-letter transliteration and the meaning.</p></div>
-      <div class="card feat"><div class="ico box"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z"/></svg></div><h3>Practise as a chat</h3><p>The guest says something; you tap the phrase you need. Get it right and it's spoken back for you to copy.</p></div>
-      <div class="card feat"><div class="ico audio"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M3 18v-6a9 9 0 0 1 18 0v6"/><path d="M21 19a2 2 0 0 1-2 2h-1v-6h3zM3 19a2 2 0 0 0 2 2h1v-6H3z"/></svg></div><h3>Your phone's voices</h3><p>Uses the free speech engine already on your phone, with up to four voices per language. Works offline once voices are downloaded.</p></div>
-      <div class="card feat"><div class="ico box"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></div><h3>Day, dark and AMOLED</h3><p>Calm violet by day, soft indigo at night, and true black to save battery on OLED screens.</p></div>
+    <div class="center reveal"><div class="kicker">Who it's for</div><h2 class="sec-title">Anyone who serves people</h2><p class="sec-lead">If your guests, customers or patients speak another language, a pack can be made for your role in minutes.</p></div>
+    <div class="who reveal">
+      <div><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21h18M5 21V8l7-5 7 5v13"/><path d="M9 21v-5h6v5M9 10h.01M15 10h.01"/></svg>Hotels</div>
+      <div><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 2v8a2 2 0 0 0 4 0V2M8 10v12M17 2c-2 2-3 5-3 8h4V2zM18 10v12"/></svg>Restaurants</div>
+      <div><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 7h14l-1.5 12h-11z"/><path d="M9 7a3 3 0 0 1 6 0"/></svg>Retail</div>
+      <div><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-4.5-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 11c0 5.5-7 10-7 10z"/><path d="M12 9v5M9.5 11.5h5"/></svg>Healthcare</div>
+      <div><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 17h14v-5l-2-5H7l-2 5z"/><path d="M3 12h18M7 17v2M17 17v2"/><circle cx="8" cy="14" r=".5"/><circle cx="16" cy="14" r=".5"/></svg>Transport</div>
+      <div><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s7-6 7-12a7 7 0 0 0-14 0c0 6 7 12 7 12z"/><circle cx="12" cy="10" r="2.5"/></svg>Tourism</div>
     </div>
   </div>
 </section>
 
-<section id="packs">
+<!-- PACKS -->
+<section id="packs" style="background:var(--bg2)">
   <div class="wrap">
-    <h2 class="sec-title">Sample packs</h2>
-    <p class="sec-lead">Four packs come built into the app. Download them to share, edit, or use as a starting point. They're samples: have a native speaker check them before relying on them at work.</p>
+    <div class="reveal"><div class="kicker">Sample packs</div><h2 class="sec-title">Start speaking today</h2>
+      <p class="sec-lead">Four packs come built in. Download them to share, edit, or use as a starting point.</p></div>
     <div class="packs">
-      <div class="card pack">
-        <div class="badge" lang="ja">日本語</div>
-        <h3>Hotel Front Office — Japanese</h3>
-        <p style="margin:0;color:var(--muted);font-size:14px">2 scenarios · 8 phrases · very formal</p>
-        <div class="sample"><b lang="ja">ご予約のお名前</b><span>go-yoyaku no o-namae</span><span>the name on your booking</span></div>
-        <a href="packs/hotel-front-office-ja.json" download>Download pack (.json)</a>
+      <div class="pack reveal"><div class="badge" lang="ja">日本語</div><h3>Hotel Front Office — Japanese</h3><p style="margin:0;color:var(--muted);font-size:14px">2 scenarios · 8 phrases · very formal</p><div class="sample"><b lang="ja">ご予約のお名前</b><span>go-yoyaku no o-namae</span><span>the name on your booking</span></div><a href="packs/hotel-front-office-ja.json" download>Download pack (.json)</a></div>
+      <div class="pack reveal"><div class="badge" lang="ko">한국어</div><h3>Hotel Front Office — Korean</h3><p style="margin:0;color:var(--muted);font-size:14px">2 scenarios · 8 phrases · very formal</p><div class="sample"><b lang="ko">예약자 성함</b><span>yeyakja seongham</span><span>the name on the booking</span></div><a href="packs/hotel-front-office-ko.json" download>Download pack (.json)</a></div>
+      <div class="pack reveal"><div class="badge" lang="zh">中文</div><h3>Hotel Front Office — Mandarin</h3><p style="margin:0;color:var(--muted);font-size:14px">2 scenarios · 8 phrases · polite</p><div class="sample"><b lang="zh">预订的名字</b><span>yùdìng de míngzi</span><span>the name on the booking</span></div><a href="packs/hotel-front-office-zh.json" download>Download pack (.json)</a></div>
+      <div class="pack reveal"><div class="badge" lang="th">ไทย</div><h3>Restaurant Server — Thai</h3><p style="margin:0;color:var(--muted);font-size:14px">2 scenarios · 8 phrases · polite</p><div class="sample"><b lang="th">กี่ท่าน</b><span>ki than</span><span>how many people (polite)</span></div><a href="packs/restaurant-server-th.json" download>Download pack (.json)</a></div>
+    </div>
+  </div>
+</section>
+
+<!-- GET -->
+<section id="get" class="walled">
+  <svg class="cubes" aria-hidden="true"><defs><pattern id="cube4" width="29.445" height="51" patternUnits="userSpaceOnUse"><path d="M-29.44 -34.00L-14.72 -42.50L0.00 -34.00L0.00 -17.00L-14.72 -8.50L-29.44 -17.00ZM-29.44 -34.00L-14.72 -25.50L0.00 -34.00M-14.72 -25.50L-14.72 -8.50M0.00 -34.00L14.72 -42.50L29.44 -34.00L29.44 -17.00L14.72 -8.50L0.00 -17.00ZM0.00 -34.00L14.72 -25.50L29.44 -34.00M14.72 -25.50L14.72 -8.50M29.44 -34.00L44.17 -42.50L58.89 -34.00L58.89 -17.00L44.17 -8.50L29.44 -17.00ZM29.44 -34.00L44.17 -25.50L58.89 -34.00M44.17 -25.50L44.17 -8.50M58.89 -34.00L73.61 -42.50L88.33 -34.00L88.33 -17.00L73.61 -8.50L58.89 -17.00ZM58.89 -34.00L73.61 -25.50L88.33 -34.00M73.61 -25.50L73.61 -8.50M-44.17 -8.50L-29.44 -17.00L-14.72 -8.50L-14.72 8.50L-29.44 17.00L-44.17 8.50ZM-44.17 -8.50L-29.44 0.00L-14.72 -8.50M-29.44 0.00L-29.44 17.00M-14.72 -8.50L0.00 -17.00L14.72 -8.50L14.72 8.50L0.00 17.00L-14.72 8.50ZM-14.72 -8.50L0.00 0.00L14.72 -8.50M0.00 0.00L0.00 17.00M14.72 -8.50L29.44 -17.00L44.17 -8.50L44.17 8.50L29.44 17.00L14.72 8.50ZM14.72 -8.50L29.44 0.00L44.17 -8.50M29.44 0.00L29.44 17.00M44.17 -8.50L58.89 -17.00L73.61 -8.50L73.61 8.50L58.89 17.00L44.17 8.50ZM44.17 -8.50L58.89 0.00L73.61 -8.50M58.89 0.00L58.89 17.00M-29.44 17.00L-14.72 8.50L0.00 17.00L0.00 34.00L-14.72 42.50L-29.44 34.00ZM-29.44 17.00L-14.72 25.50L0.00 17.00M-14.72 25.50L-14.72 42.50M0.00 17.00L14.72 8.50L29.44 17.00L29.44 34.00L14.72 42.50L0.00 34.00ZM0.00 17.00L14.72 25.50L29.44 17.00M14.72 25.50L14.72 42.50M29.44 17.00L44.17 8.50L58.89 17.00L58.89 34.00L44.17 42.50L29.44 34.00ZM29.44 17.00L44.17 25.50L58.89 17.00M44.17 25.50L44.17 42.50M58.89 17.00L73.61 8.50L88.33 17.00L88.33 34.00L73.61 42.50L58.89 34.00ZM58.89 17.00L73.61 25.50L88.33 17.00M73.61 25.50L73.61 42.50M-44.17 42.50L-29.44 34.00L-14.72 42.50L-14.72 59.50L-29.44 68.00L-44.17 59.50ZM-44.17 42.50L-29.44 51.00L-14.72 42.50M-29.44 51.00L-29.44 68.00M-14.72 42.50L0.00 34.00L14.72 42.50L14.72 59.50L0.00 68.00L-14.72 59.50ZM-14.72 42.50L0.00 51.00L14.72 42.50M0.00 51.00L0.00 68.00M14.72 42.50L29.44 34.00L44.17 42.50L44.17 59.50L29.44 68.00L14.72 59.50ZM14.72 42.50L29.44 51.00L44.17 42.50M29.44 51.00L29.44 68.00M44.17 42.50L58.89 34.00L73.61 42.50L73.61 59.50L58.89 68.00L44.17 59.50ZM44.17 42.50L58.89 51.00L73.61 42.50M58.89 51.00L58.89 68.00M-29.44 68.00L-14.72 59.50L0.00 68.00L0.00 85.00L-14.72 93.50L-29.44 85.00ZM-29.44 68.00L-14.72 76.50L0.00 68.00M-14.72 76.50L-14.72 93.50M0.00 68.00L14.72 59.50L29.44 68.00L29.44 85.00L14.72 93.50L0.00 85.00ZM0.00 68.00L14.72 76.50L29.44 68.00M14.72 76.50L14.72 93.50M29.44 68.00L44.17 59.50L58.89 68.00L58.89 85.00L44.17 93.50L29.44 85.00ZM29.44 68.00L44.17 76.50L58.89 68.00M44.17 76.50L44.17 93.50M58.89 68.00L73.61 59.50L88.33 68.00L88.33 85.00L73.61 93.50L58.89 85.00ZM58.89 68.00L73.61 76.50L88.33 68.00M73.61 76.50L73.61 93.50" fill="none" stroke="currentColor" stroke-width="1" stroke-linejoin="round"/></pattern></defs><rect width="100%" height="100%" fill="url(#cube4)"/></svg>
+  <div class="wrap">
+    <div class="center reveal"><div class="kicker">Get Qonverse</div><h2 class="sec-title">Android app or web app — your choice</h2><p class="sec-lead">Same packs, same lessons. The Android app updates itself; the web app is always the latest version.</p></div>
+    <div class="get">
+      <div class="get-card android reveal">
+        <svg class="big-ic" width="180" height="180" viewBox="0 0 24 24" fill="#fff" aria-hidden="true"><path d="M17.6 9.5 19.3 6.6a.4.4 0 0 0-.7-.4l-1.7 3a10.4 10.4 0 0 0-9.8 0l-1.7-3a.4.4 0 1 0-.7.4l1.7 2.9A9.7 9.7 0 0 0 1.5 17h21a9.7 9.7 0 0 0-4.9-7.5Z"/></svg>
+        <h3>Android</h3>
+        <p>Version 0.2.0 preview · Android 8.0 or newer · 1.3 MB</p>
+        <a class="btn" href="download/Qonverse-0.2.0.apk" download>Download APK</a>
+        <ol>
+          <li>Open the downloaded file on your phone.</li>
+          <li>If asked, allow your browser to install unknown apps.</li>
+          <li>Open Qonverse — the sample packs are already there.</li>
+          <li>It checks for updates each time it opens and asks before installing.</li>
+        </ol>
+        <p style="font-size:13px">SHA-256 <code>3ef7f48657cbb21d96a7d4995ccd9ca1ddd1a87b81c8d408ce5a05642afeef4d</code></p>
       </div>
-      <div class="card pack">
-        <div class="badge" lang="ko">한국어</div>
-        <h3>Hotel Front Office — Korean</h3>
-        <p style="margin:0;color:var(--muted);font-size:14px">2 scenarios · 8 phrases · very formal</p>
-        <div class="sample"><b lang="ko">예약자 성함</b><span>yeyakja seongham</span><span>the name on the booking</span></div>
-        <a href="packs/hotel-front-office-ko.json" download>Download pack (.json)</a>
+      <div class="get-card web reveal" style="transition-delay:.12s">
+        <svg class="big-ic" width="180" height="180" viewBox="0 0 24 24" fill="none" stroke="var(--box)" stroke-width="1.5" aria-hidden="true"><rect x="6" y="2" width="12" height="20" rx="3"/></svg>
+        <h3>Web app <span class="muted" style="font-size:18px;font-weight:600">for iPhone &amp; iPad</span></h3>
+        <p class="muted">Runs in Safari, Chrome or any modern browser. Works offline after the first visit.</p>
+        <a class="btn btn-primary" href="app/">Launch web app</a>
+        <ol>
+          <li>Open the web app in Safari on your iPhone.</li>
+          <li>Tap <b>Share</b>, then <b>Add to Home Screen</b>.</li>
+          <li>Open Qonverse from your home screen like any app.</li>
+          <li>Need a voice? Settings › Accessibility › Spoken Content › Voices.</li>
+        </ol>
       </div>
-      <div class="card pack">
-        <div class="badge" lang="zh">中文</div>
-        <h3>Hotel Front Office — Mandarin</h3>
-        <p style="margin:0;color:var(--muted);font-size:14px">2 scenarios · 8 phrases · polite</p>
-        <div class="sample"><b lang="zh">预订的名字</b><span>yùdìng de míngzi</span><span>the name on the booking</span></div>
-        <a href="packs/hotel-front-office-zh.json" download>Download pack (.json)</a>
-      </div>
-      <div class="card pack">
-        <div class="badge" lang="th">ไทย</div>
-        <h3>Restaurant Server — Thai</h3>
-        <p style="margin:0;color:var(--muted);font-size:14px">2 scenarios · 8 phrases · polite</p>
-        <div class="sample"><b lang="th">กี่ท่าน</b><span>ki than</span><span>how many people (polite)</span></div>
-        <a href="packs/restaurant-server-th.json" download>Download pack (.json)</a>
+    </div>
+    <div class="disclaimer reveal" id="preview">
+      <div class="ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 9v4M12 17h.01"/><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/></svg></div>
+      <div>
+        <h3>This is a preview release</h3>
+        <ul>
+          <li>Qonverse is new and still being tested, so you may find bugs or changes between versions.</li>
+          <li>The sample packs and AI-made packs haven't been checked by native speakers. Have someone fluent review phrases before relying on them with real guests.</li>
+          <li>Voices come from your phone or browser, so pronunciation and the voices available vary by device.</li>
+          <li>The Android preview is installed outside Google Play. Your packs and progress are kept only on your device.</li>
+          <li>Provided as-is under the Apache License 2.0. Found a problem? <a href="https://github.com/aadvark/Qonverse/issues">Tell us on GitHub</a>.</li>
+        </ul>
       </div>
     </div>
   </div>
 </section>
 
-<section id="download">
-  <div class="wrap split">
-    <div class="dl-card">
-      <h3>Download Qonverse 0.1.0</h3>
-      <p>Preview build for Android 8.0 and newer · 1.3 MB</p>
-      <a class="btn" href="download/Qonverse-0.1.0.apk" download>Download APK</a>
-      <p style="font-size:13px">SHA-256 checksum</p>
-      <code>0f1548030f37da49f7822356438d62b901dc31614230f386ed40bfa8549a0c62</code>
-    </div>
-    <div class="card">
-      <h3 style="margin-bottom:10px">Installing the APK</h3>
-      <ol class="install">
-        <li>Open the downloaded file on your Android phone.</li>
-        <li>If asked, allow your browser or file app to install unknown apps.</li>
-        <li>Open Qonverse. The four sample packs are already there.</li>
-        <li>No voice for a language? Tap the notice in the pack, or <b>Settings › Get more voices</b>, to download it free.</li>
-      </ol>
-      <p class="fine">This preview isn't on Google Play yet. All source code is on <a href="https://github.com/aadvark/Qonverse">GitHub</a> under the Apache License 2.0.</p>
+<!-- FINAL CTA -->
+<section style="padding-top:0">
+  <div class="wrap">
+    <div class="final reveal">
+      <svg class="cubes" aria-hidden="true"><defs><pattern id="cube5" width="29.445" height="51" patternUnits="userSpaceOnUse"><path d="M-29.44 -34.00L-14.72 -42.50L0.00 -34.00L0.00 -17.00L-14.72 -8.50L-29.44 -17.00ZM-29.44 -34.00L-14.72 -25.50L0.00 -34.00M-14.72 -25.50L-14.72 -8.50M0.00 -34.00L14.72 -42.50L29.44 -34.00L29.44 -17.00L14.72 -8.50L0.00 -17.00ZM0.00 -34.00L14.72 -25.50L29.44 -34.00M14.72 -25.50L14.72 -8.50M29.44 -34.00L44.17 -42.50L58.89 -34.00L58.89 -17.00L44.17 -8.50L29.44 -17.00ZM29.44 -34.00L44.17 -25.50L58.89 -34.00M44.17 -25.50L44.17 -8.50M58.89 -34.00L73.61 -42.50L88.33 -34.00L88.33 -17.00L73.61 -8.50L58.89 -17.00ZM58.89 -34.00L73.61 -25.50L88.33 -34.00M73.61 -25.50L73.61 -8.50M-44.17 -8.50L-29.44 -17.00L-14.72 -8.50L-14.72 8.50L-29.44 17.00L-44.17 8.50ZM-44.17 -8.50L-29.44 0.00L-14.72 -8.50M-29.44 0.00L-29.44 17.00M-14.72 -8.50L0.00 -17.00L14.72 -8.50L14.72 8.50L0.00 17.00L-14.72 8.50ZM-14.72 -8.50L0.00 0.00L14.72 -8.50M0.00 0.00L0.00 17.00M14.72 -8.50L29.44 -17.00L44.17 -8.50L44.17 8.50L29.44 17.00L14.72 8.50ZM14.72 -8.50L29.44 0.00L44.17 -8.50M29.44 0.00L29.44 17.00M44.17 -8.50L58.89 -17.00L73.61 -8.50L73.61 8.50L58.89 17.00L44.17 8.50ZM44.17 -8.50L58.89 0.00L73.61 -8.50M58.89 0.00L58.89 17.00M-29.44 17.00L-14.72 8.50L0.00 17.00L0.00 34.00L-14.72 42.50L-29.44 34.00ZM-29.44 17.00L-14.72 25.50L0.00 17.00M-14.72 25.50L-14.72 42.50M0.00 17.00L14.72 8.50L29.44 17.00L29.44 34.00L14.72 42.50L0.00 34.00ZM0.00 17.00L14.72 25.50L29.44 17.00M14.72 25.50L14.72 42.50M29.44 17.00L44.17 8.50L58.89 17.00L58.89 34.00L44.17 42.50L29.44 34.00ZM29.44 17.00L44.17 25.50L58.89 17.00M44.17 25.50L44.17 42.50M58.89 17.00L73.61 8.50L88.33 17.00L88.33 34.00L73.61 42.50L58.89 34.00ZM58.89 17.00L73.61 25.50L88.33 17.00M73.61 25.50L73.61 42.50M-44.17 42.50L-29.44 34.00L-14.72 42.50L-14.72 59.50L-29.44 68.00L-44.17 59.50ZM-44.17 42.50L-29.44 51.00L-14.72 42.50M-29.44 51.00L-29.44 68.00M-14.72 42.50L0.00 34.00L14.72 42.50L14.72 59.50L0.00 68.00L-14.72 59.50ZM-14.72 42.50L0.00 51.00L14.72 42.50M0.00 51.00L0.00 68.00M14.72 42.50L29.44 34.00L44.17 42.50L44.17 59.50L29.44 68.00L14.72 59.50ZM14.72 42.50L29.44 51.00L44.17 42.50M29.44 51.00L29.44 68.00M44.17 42.50L58.89 34.00L73.61 42.50L73.61 59.50L58.89 68.00L44.17 59.50ZM44.17 42.50L58.89 51.00L73.61 42.50M58.89 51.00L58.89 68.00M-29.44 68.00L-14.72 59.50L0.00 68.00L0.00 85.00L-14.72 93.50L-29.44 85.00ZM-29.44 68.00L-14.72 76.50L0.00 68.00M-14.72 76.50L-14.72 93.50M0.00 68.00L14.72 59.50L29.44 68.00L29.44 85.00L14.72 93.50L0.00 85.00ZM0.00 68.00L14.72 76.50L29.44 68.00M14.72 76.50L14.72 93.50M29.44 68.00L44.17 59.50L58.89 68.00L58.89 85.00L44.17 93.50L29.44 85.00ZM29.44 68.00L44.17 76.50L58.89 68.00M44.17 76.50L44.17 93.50M58.89 68.00L73.61 59.50L88.33 68.00L88.33 85.00L73.61 93.50L58.89 85.00ZM58.89 68.00L73.61 76.50L88.33 68.00M73.61 76.50L73.61 93.50" fill="none" stroke="currentColor" stroke-width="1" stroke-linejoin="round"/></pattern></defs><rect width="100%" height="100%" fill="url(#cube5)"/></svg>
+      <h2>Be ready for your next guest <span class="hanzi" lang="ja">話</span></h2>
+      <p>The right phrase, ready when you need it. Free, open source, and made for people who work with people.</p>
+      <div class="cta">
+        <a class="btn btn-light" href="download/Qonverse-0.2.0.apk" download>Download for Android</a>
+        <a class="btn btn-outline" href="app/">Launch web app</a>
+      </div>
     </div>
   </div>
 </section>
+</main>
 
 <footer>
   <div class="wrap row">
     <span>Qonverse · Made by Lee Wen Yang (Mike) · Kith + Keen</span>
-    <span><a href="https://github.com/aadvark/Qonverse">GitHub</a> · <a href="https://github.com/aadvark/Qonverse/blob/main/LICENSE">Apache License 2.0</a></span>
+    <span><a href="https://github.com/aadvark/Qonverse">GitHub</a> · <a href="pack-format.md">Pack format</a> · <a href="https://github.com/aadvark/Qonverse/blob/main/LICENSE">Apache License 2.0</a></span>
   </div>
 </footer>
 
 <script>
-(function(){
-  var b=document.getElementById('copy'), pre=document.getElementById('prompt');
-  if(!b||!pre) return;
-  b.addEventListener('click',function(){
-    var text=pre.textContent.split('\n---\n').slice(1).join('\n---\n')||pre.textContent;
-    var done=function(){b.textContent='Copied — now open your AI';};
-    if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(text).then(done,function(){fallback(text);done();});}
-    else{fallback(text);done();}
+(function () {
+  var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+  // sticky nav border
+  var top = document.getElementById('top');
+  addEventListener('scroll', function () { top.classList.toggle('scrolled', scrollY > 8); }, { passive: true });
+  // reveal on scroll
+  var io = 'IntersectionObserver' in window ? new IntersectionObserver(function (es) {
+    es.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
+  }, { threshold: .12 }) : null;
+  document.querySelectorAll('.reveal').forEach(function (el) { io ? io.observe(el) : el.classList.add('in'); });
+  // rotating language in the headline
+  var words = ['日本語', '中文', '한국어', 'ไทย', 'Tiếng Việt', 'Bahasa', 'Español', 'Français', 'any language'];
+  var rot = document.getElementById('rotator'), wi = 0;
+  if (!reduce) setInterval(function () { wi = (wi + 1) % words.length; rot.innerHTML = '<span>' + words[wi] + '</span>'; }, 2200);
+  else rot.textContent = 'any language';
+  // feature carousel
+  var car = document.getElementById('carousel'), slides = car.querySelectorAll('.slide'), tabs = car.querySelectorAll('.tab');
+  var cur = 0, DUR = 5200, timer = null, paused = reduce, hover = false;
+  car.style.setProperty('--dur', DUR + 'ms');
+  function show(i) {
+    cur = (i + slides.length) % slides.length;
+    slides.forEach(function (s, k) { s.classList.toggle('on', k === cur); s.setAttribute('aria-hidden', k === cur ? 'false' : 'true'); });
+    tabs.forEach(function (t, k) { t.setAttribute('aria-selected', k === cur ? 'true' : 'false'); t.tabIndex = k === cur ? 0 : -1; var f = t.querySelector('.fill'); f.style.animation = 'none'; f.offsetWidth; f.style.animation = ''; });
+    schedule();
+  }
+  function schedule() { clearTimeout(timer); if (!paused && !hover) timer = setTimeout(function () { show(cur + 1); }, DUR); }
+  tabs.forEach(function (t, k) { t.addEventListener('click', function () { show(k); }); });
+  document.getElementById('next').onclick = function () { show(cur + 1); };
+  document.getElementById('prev').onclick = function () { show(cur - 1); };
+  var pb = document.getElementById('pause');
+  function setPaused(p) {
+    paused = p; car.classList.toggle('paused', p || hover);
+    pb.setAttribute('aria-label', p ? 'Play rotation' : 'Pause rotation');
+    document.getElementById('pauseIc').innerHTML = p ? '<path d="M8 5v14l11-7z"/>' : '<rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/>';
+    schedule();
+  }
+  pb.onclick = function () { setPaused(!paused); };
+  car.addEventListener('mouseenter', function () { hover = true; car.classList.add('paused'); clearTimeout(timer); });
+  car.addEventListener('mouseleave', function () { hover = false; car.classList.toggle('paused', paused); schedule(); });
+  car.addEventListener('focusin', function () { hover = true; car.classList.add('paused'); clearTimeout(timer); });
+  car.addEventListener('focusout', function () { hover = false; car.classList.toggle('paused', paused); schedule(); });
+  var x0 = null;
+  car.addEventListener('touchstart', function (e) { x0 = e.touches[0].clientX; }, { passive: true });
+  car.addEventListener('touchend', function (e) { if (x0 == null) return; var dx = e.changedTouches[0].clientX - x0; x0 = null; if (Math.abs(dx) > 50) show(cur + (dx < 0 ? 1 : -1)); });
+  setPaused(paused); show(0);
+  // copy prompt
+  var b = document.getElementById('copy');
+  b.addEventListener('click', function () {
+    fetch('prompt.md').then(function (r) { return r.text(); }).then(function (t) {
+      return navigator.clipboard.writeText(t.split('\n---\n').slice(1).join('\n---\n') || t);
+    }).then(function () { b.textContent = 'Copied — now open your AI'; }, function () { location.href = 'prompt.md'; });
   });
-  function fallback(t){var a=document.createElement('textarea');a.value=t;document.body.appendChild(a);a.select();try{document.execCommand('copy');}catch(e){}document.body.removeChild(a);}
 })();
 </script>
 </body>

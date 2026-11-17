@@ -422,10 +422,41 @@ fun SettingsScreen(back: () -> Unit) {
                 Slider(slow, { slow = it }, valueRange = 0.3f..0.9f, onValueChangeFinished = { app.store.slowRate = slow }, colors = sliderColors)
 
                 Spacer(6.dp)
+                Text("Updates", color = c.ink, fontWeight = FontWeight.Bold, fontSize = 16.sp)
+                var auto by remember { mutableStateOf(app.store.autoUpdate) }
+                var checkMsg by remember { mutableStateOf<String?>(null) }
+                val scope = rememberCoroutineScope()
+                Row(
+                    Modifier.fillMaxWidth().clip(RoundedCornerShape(18.dp)).background(c.surface).border(1.dp, c.line, RoundedCornerShape(18.dp))
+                        .clickable(role = Role.Switch) { auto = !auto; app.store.autoUpdate = auto }.padding(16.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Column(Modifier.weight(1f)) {
+                        Text("Check for updates when the app opens", color = c.ink, fontSize = 15.sp, fontWeight = FontWeight.SemiBold)
+                        Text("Preview builds update from GitHub. Android asks you to confirm each install.", color = c.muted, fontSize = 13.sp)
+                    }
+                    HSpacer(12.dp)
+                    androidx.compose.material3.Switch(checked = auto, onCheckedChange = { auto = it; app.store.autoUpdate = it },
+                        colors = androidx.compose.material3.SwitchDefaults.colors(checkedTrackColor = c.box, checkedThumbColor = c.onBox))
+                }
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    SmallButton("Check now") {
+                        checkMsg = "Checking…"
+                        scope.launch {
+                            val u = com.kithandkeen.qonverse.Updater.check()
+                            if (u != null) { app.update = u; app.updateDismissed = false; checkMsg = null }
+                            else checkMsg = "You have the latest version."
+                        }
+                    }
+                    HSpacer(12.dp)
+                    checkMsg?.let { Text(it, color = c.muted, fontSize = 13.sp) }
+                }
+
+                Spacer(6.dp)
                 Text("About", color = c.ink, fontWeight = FontWeight.Bold, fontSize = 16.sp)
                 Column(Modifier.fillMaxWidth().clip(RoundedCornerShape(18.dp)).background(c.surface).border(1.dp, c.line, RoundedCornerShape(18.dp)).padding(16.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
                     Logo(20)
-                    Text("Version 0.1.0 · Open source under the Apache License 2.0", color = c.muted, fontSize = 13.sp)
+                    Text("Version ${com.kithandkeen.qonverse.BuildConfig.VERSION_NAME} (preview) · Open source under the Apache License 2.0", color = c.muted, fontSize = 13.sp)
                     Text("Made by Lee Wen Yang (Mike) · Kith + Keen", color = c.muted, fontSize = 13.sp)
                     Text(
                         "github.com/aadvark/Qonverse", color = c.boxText, fontSize = 14.sp, fontWeight = FontWeight.SemiBold,

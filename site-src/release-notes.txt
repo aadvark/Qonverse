@@ -1,0 +1,1 @@
+Checks for updates each time the app opens, plus a few fixes.

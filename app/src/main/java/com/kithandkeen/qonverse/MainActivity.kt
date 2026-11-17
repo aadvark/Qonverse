@@ -8,7 +8,20 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.systemBarsPadding
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.LinearProgressIndicator
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.unit.dp
+import kotlinx.coroutines.launch
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -36,6 +49,9 @@ class AppState(val store: Store, val speaker: Speaker) {
         private set
     var theme by mutableStateOf(store.themeMode)
         private set
+    /** A newer preview version found by the update check, if any. */
+    var update by mutableStateOf<UpdateInfo?>(null)
+    var updateDismissed by mutableStateOf(false)
     /** Bumped whenever progress changes, so screens re-read it. */
     var progressTick by mutableIntStateOf(0)
 
@@ -77,6 +93,10 @@ class MainActivity : ComponentActivity() {
 @Composable
 private fun AppNav() {
     val nav = rememberNavController()
+    val app = LocalApp.current
+    // Check for a newer preview version every time the app opens.
+    LaunchedEffect(Unit) { if (app.store.autoUpdate) app.update = Updater.check() }
+    app.update?.let { if (!app.updateDismissed) UpdateDialog(it) { app.updateDismissed = true } }
     Box(Modifier.fillMaxSize().background(Q.c.bg).systemBarsPadding()) {
         NavHost(nav, startDestination = "home") {
             composable("home") {
@@ -114,4 +134,43 @@ private fun AppNav() {
             composable("settings") { SettingsScreen(back = { nav.popBackStack() }) }
         }
     }
+}
+
+@Composable
+private fun UpdateDialog(info: UpdateInfo, dismiss: () -> Unit) {
+    val ctx = LocalContext.current
+    val c = Q.c
+    val scope = rememberCoroutineScope()
+    var busy by remember { mutableStateOf(false) }
+    var progress by remember { mutableFloatStateOf(0f) }
+    var message by remember { mutableStateOf<String?>(null) }
+    AlertDialog(
+        onDismissRequest = { if (!busy) dismiss() },
+        containerColor = c.surface,
+        title = { Text("Update available", color = c.ink) },
+        text = {
+            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                Text("Qonverse ${info.versionName} is ready (you have ${BuildConfig.VERSION_NAME}).", color = c.ink)
+                if (info.notes.isNotBlank()) Text(info.notes, color = c.muted)
+                if (busy) LinearProgressIndicator(progress = { progress }, color = c.box, trackColor = c.track)
+                message?.let { Text(it, color = c.boxText) }
+            }
+        },
+        confirmButton = {
+            TextButton(enabled = !busy, onClick = {
+                if (!Updater.canInstall(ctx)) {
+                    message = "Allow Qonverse to install updates, then come back and tap Update again."
+                    Updater.openInstallPermission(ctx)
+                    return@TextButton
+                }
+                busy = true; message = null
+                scope.launch {
+                    runCatching { Updater.download(ctx, info) { progress = it } }
+                        .onSuccess { busy = false; Updater.install(ctx, it) }
+                        .onFailure { busy = false; message = "Couldn't download the update. Check your connection and try again." }
+                }
+            }) { Text(if (busy) "Downloading…" else "Update", color = c.boxText) }
+        },
+        dismissButton = { TextButton(enabled = !busy, onClick = dismiss) { Text("Later", color = c.muted) } },
+    )
 }

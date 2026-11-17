@@ -97,6 +97,10 @@ class Store(private val context: Context) {
         get() = prefs.getFloat("rate_slow", 0.6f)
         set(v) = prefs.edit().putFloat("rate_slow", v).apply()
 
+    var autoUpdate: Boolean
+        get() = prefs.getBoolean("auto_update", true)
+        set(v) = prefs.edit().putBoolean("auto_update", v).apply()
+
     fun voiceFor(lang: String): String? = prefs.getString("voice:$lang", null)
     fun setVoiceFor(lang: String, name: String) = prefs.edit().putString("voice:$lang", name).apply()
 

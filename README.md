@@ -3,11 +3,13 @@
 <h1 align="center">Qonverse</h1>
 
 <p align="center"><b>Learn the phrases your job needs — in any language.</b><br>
-A free, open source Android app for working people: front desk, restaurant floor, shop, ward or taxi.</p>
+A free, open source app for working people — front desk, restaurant floor, shop, ward or taxi.<br>
+Android app, plus a web app for iPhone, iPad and any browser. <b>Preview release.</b></p>
 
 <p align="center">
   <a href="https://aadvark.github.io/Qonverse/">Website</a> ·
-  <a href="https://aadvark.github.io/Qonverse/download/Qonverse-0.1.0.apk">Download APK</a> ·
+  <a href="https://github.com/aadvark/Qonverse/raw/main/docs/download/Qonverse-0.2.0.apk">Download APK</a> ·
+  <a href="https://aadvark.github.io/Qonverse/docs/app/">Web app (iPhone &amp; any browser)</a> ·
   <a href="prompts/pack-generator-prompt.md">Pack prompt</a> ·
   <a href="docs/pack-format.md">Pack format</a>
 </p>
@@ -35,6 +37,11 @@ Qonverse itself runs no AI and needs no account or API key.
 - **Chat-style review** — the guest speaks; you tap the phrase you need.
 - **Phone voices** — uses the phone's own free text-to-speech engine, with up to four voices per language. Nothing is bundled or recorded.
 - **Day, dark and AMOLED themes**, offline use, and packs you can share as files.
+- **Updates itself** — the Android app checks `docs/version.json` each time it opens and offers the new APK; the web app always loads the latest version when online.
+
+## Web app (iPhone, iPad, any browser)
+
+[`docs/app/`](docs/app) is the same app as a progressive web app: open it in Safari and choose **Share › Add to Home Screen**. It uses the browser's built-in voices, works offline after the first visit, and keeps packs and progress in the browser.
 
 ## Sample packs
 
@@ -59,9 +66,11 @@ Requirements: JDK 17+ and the Android SDK (platform 35).
 python3 site-src/build_site.py     # rebuild the landing page in docs/
 ```
 
-Preview builds are signed with the debug key. For Google Play, sign with your own upload key.
+Preview APKs are signed with the Qonverse preview key (set `QONVERSE_KEYSTORE` to its path) so in-app updates install over each other. For Google Play, sign with your own upload key and turn off the in-app updater.
 
-Every push builds the APK on GitHub Actions; pushing a tag such as `v0.1.0` attaches the APK to a GitHub release.
+To publish an update: bump `versionCode`/`versionName` in `app/build.gradle.kts`, build, copy the APK to `docs/download/Qonverse-<version>.apk`, edit `site-src/release-notes.txt`, run `python3 site-src/build_site.py`, then commit and push. Installed apps pick it up the next time they open.
+
+Every push also builds the APK on GitHub Actions as a check.
 
 ## Project layout
 
@@ -70,7 +79,7 @@ app/        Android app (Kotlin, Jetpack Compose)
 packs/      Sample scenario packs (format v1.2)
 prompts/    The AI prompt that writes packs
 schema/     JSON Schema for packs
-docs/       Landing page (GitHub Pages) and pack format docs
+docs/       Website (GitHub Pages): landing page, web app (docs/app), APK, version.json
 design/     Logo, app icon and palette
 site-src/   Landing page template and build script
 ```
